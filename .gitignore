@@ -4,7 +4,9 @@
 .project
 .settings/
 target/
-.idea/
+.idea
+**/.idea
 *.class
 *.jar
 *.iml
+.scaffolding_list.tmp
