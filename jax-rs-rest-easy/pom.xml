@@ -16,7 +16,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.java>11.0</version.java>
+        <version.java>1.8</version.java>
 
         <version.jackson>2.9.8</version.jackson>
         <version.commons-lang3>3.9</version.commons-lang3>
@@ -26,13 +26,12 @@
         <version.surefire>2.22.1</version.surefire>
         <version.failsafe>2.22.1</version.failsafe>
 
-        <version.resteasy>3.9.0.Final</version.resteasy>
-        <version.resteasy-validator>3.9.0.Final</version.resteasy-validator>
+        <version.resteasy>4.3.1.Final</version.resteasy>
         <version.weld-servlet>2.4.8.Final</version.weld-servlet>
 
-        <version.mvn.compiler.plugin>3.1</version.mvn.compiler.plugin>
-        <version.mvn.compiler.plugin.jdk>11</version.mvn.compiler.plugin.jdk>
-        <version.mvn.build-helper.plugin>11</version.mvn.build-helper.plugin>
+        <version.mvn.compiler.plugin>3.8.1</version.mvn.compiler.plugin>
+        <version.mvn.compiler.plugin.jdk>8</version.mvn.compiler.plugin.jdk>
+        <version.mvn.build-helper.plugin>8</version.mvn.build-helper.plugin>
     </properties>
 
     <build>
@@ -76,6 +75,7 @@
 
     <dependencies>
         <!-- required java dependencies -->
+        <!-- todo : version numbers -->
         <dependency>
             <groupId>javax.annotation</groupId>
             <artifactId>javax.annotation-api</artifactId>
@@ -107,6 +107,13 @@
             <artifactId>javax.el</artifactId>
             <version>3.0.0</version>
         </dependency>
+        <!-- todo : required ? -->
+        <!--<dependency>-->
+            <!--<groupId>javax.enterprise</groupId>-->
+            <!--<artifactId>cdi-api</artifactId>-->
+            <!--<version>2.0</version>-->
+            <!--<scope>provided</scope>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -169,7 +176,7 @@
         <!--dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-jaxrs</artifactId>
-            <version>${version.resteasy}</version>
+            <version>3.9.0}</version>
             <scope>test</scope>
         </dependency-->
         <dependency>
@@ -181,7 +188,7 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-validator-provider</artifactId>
-            <version>${version.resteasy-validator}</version>
+            <version>${version.resteasy}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -190,6 +197,7 @@
             <version>${version.resteasy}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.jboss.weld.servlet</groupId>
             <artifactId>weld-servlet</artifactId>
