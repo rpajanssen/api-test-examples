@@ -23,8 +23,7 @@ As mocking framework we will use [Mockito 2](https://site.mockito.org).
 <a name="RestEasy"></a>
 # RestEasy
 
-One option to test JAX-RS resources is to use RestEasy. We have some test examples and we were forced to extract them
-into another project because CDI-Runner and RestEasy are not compatible (see issues.txt).
+One option to test JAX-RS resources is to use RestEasy. 
 
 Like with JerseyTest with RestEasy the unit test will create an in-memory http-server and from your unit test
 you deploy the resource(s) you want to test on that server. Then the unit tests will be executed and those
