@@ -16,7 +16,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.java>1.8</version.java>
+        <version.java>11</version.java>
 
         <version.jackson>2.9.8</version.jackson>
         <version.commons-lang3>3.9</version.commons-lang3>
@@ -30,8 +30,8 @@
         <version.weld-servlet>2.4.8.Final</version.weld-servlet>
 
         <version.mvn.compiler.plugin>3.8.1</version.mvn.compiler.plugin>
-        <version.mvn.compiler.plugin.jdk>8</version.mvn.compiler.plugin.jdk>
-        <version.mvn.build-helper.plugin>8</version.mvn.build-helper.plugin>
+        <version.mvn.compiler.plugin.jdk>11</version.mvn.compiler.plugin.jdk>
+        <version.mvn.build-helper.plugin>11</version.mvn.build-helper.plugin>
     </properties>
 
     <build>
