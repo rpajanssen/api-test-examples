@@ -3,7 +3,7 @@ package com.abnamro.examples.jaxrs;
 import com.abnamro.examples.aspects.Logger;
 import com.abnamro.examples.dao.HardCodedPersonDAO;
 import com.abnamro.examples.dao.PersonDAO;
-import com.abnamro.examples.domain.api.PersistablePerson;
+import com.abnamro.examples.domain.api.Person;
 import com.abnamro.examples.jaxrs.exceptionhandling.ConstraintViolationHandler;
 import com.abnamro.examples.jaxrs.exceptionhandling.DefaultExceptionHandler;
 import com.abnamro.examples.jaxrs.exceptionhandling.ValidationExceptionHandler;
@@ -14,6 +14,7 @@ import com.abnamro.examples.jaxrs.interceptors.RemoveBlacklistedLastNameRequestI
 import com.abnamro.examples.jaxrs.resources.DefaultPersonResource;
 import com.abnamro.examples.utils.FakeLogger;
 
+import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Application;
 import java.util.Collections;
@@ -25,13 +26,14 @@ import java.util.Set;
  *
  * To make CDI work (with RestEasy) we also added an empty beans.xml.
  */
-//@ApplicationPath("v1") // todo : figure out how to define path and test with rest-easy
+@ApplicationPath("/") // todo
 public class MyApplication extends Application {
     @Override
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<>();
         classes.add(DefaultPersonResource.class);
 
+        // todo : from test
         classes.add(ConstraintViolationHandler.class);
         classes.add(ValidationExceptionHandler.class);
         classes.add(DefaultExceptionHandler.class);
@@ -51,7 +53,7 @@ public class MyApplication extends Application {
     }
 
     @Produces
-    public PersonDAO<PersistablePerson> personDAO() {
+    public PersonDAO<Person> personDAO() {
         return new HardCodedPersonDAO();
     }
 

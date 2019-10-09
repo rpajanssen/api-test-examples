@@ -5,6 +5,7 @@
 .settings/
 target/
 .idea/
+.idea
 *.class
 *.jar
 *.iml

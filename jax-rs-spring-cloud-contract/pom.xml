@@ -19,15 +19,27 @@
         <version.java>11.0</version.java>
 
         <version.jackson>2.9.8</version.jackson>
+        <version.commons-lang3>3.9</version.commons-lang3>
 
         <version.mockito>2.23.4</version.mockito>
         <version.junit.jupiter>5.4.2</version.junit.jupiter>
         <version.surefire>2.22.1</version.surefire>
         <version.failsafe>2.22.1</version.failsafe>
 
-        <version.commons-lang3>3.9</version.commons-lang3>
+        <version.resteasy>4.3.1.Final</version.resteasy>
+        <version.weld-servlet>2.4.8.Final</version.weld-servlet>
 
-        <version.mvn.compiler.plugin>3.1</version.mvn.compiler.plugin>
+        <!--
+            Can't get SR2 and 2.1.3 / 2.1.2 to work. Is is a mess!
+
+            Can't get SR1 with 2.1.2 to work either. A lot of groovy errors will happen then.
+        -->
+        <!--spring-cloud.version>Greenwich.SR2</spring-cloud.version>
+        <spring-cloud-contract.version>2.1.2.RELEASE</spring-cloud-contract.version-->
+        <spring-cloud.version>Greenwich.SR1</spring-cloud.version>
+        <spring-cloud-contract.version>2.1.1.RELEASE</spring-cloud-contract.version>
+
+        <version.mvn.compiler.plugin>3.8.1</version.mvn.compiler.plugin>
         <version.mvn.compiler.plugin.jdk>11</version.mvn.compiler.plugin.jdk>
         <version.mvn.build-helper.plugin>11</version.mvn.build-helper.plugin>
     </properties>
@@ -57,17 +69,90 @@
                     </includes>
                 </configuration>
             </plugin>
+            <!--
+                CDC: This plugin is responsible for generating and running the tests given the contracts.
+            -->
+            <plugin>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-contract-maven-plugin</artifactId>
+                <version>${spring-cloud-contract.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <testFramework>JUNIT5</testFramework>
+                    <!--
+                        CDC: Specify the test-method used by the generated test. Default is MOCKMVC. Other options are:
+                        WEBTESTCLIENT, JAXRSCLIENT, EXPLICIT. You can not have one set of test using mocking and another
+                        set of test using the web-test client since you can only specify this setting once for the whole
+                        project/module!
+
+                        In this project we do have mocked and wired generated test, while using the default MOCKMVC
+                        test-method. We implemented a base test class that wires the complete app and then passes the
+                        application context to springs RestAssuredMockMvc to make all the beans available to the mocked
+                        environment of the generated tests. Note that this NOT how you should be doing it!
+                    -->
+                    <testMode>JAXRSCLIENT</testMode>
+
+                    <!--
+                        CDC: To bind the contracts to an abstract test-class that sets up the wiring we have three
+                        different options. The first one is the one we use in this example, and that is association
+                        by name conventions. With the packageWithBaseClasses-property we configure the base package
+                        were (all) our abstract test-classes can be found. The contracts are read from the
+                        "/resources/contracts" folder and the subfolder structure the contracts are in define the name
+                        of the abstract test-class to be used. As example we have a subfolder structure of "person/mocked"
+                        that holds our contracts, then the base class that will be used is PersonMockedBase.
+
+                        Note that normally you won't have a "mocked" or  "wired" folder, we have these just to be
+                        able to show you how you can have a mocked and/or wired test.
+                     -->
+                    <packageWithBaseClasses>com.abnamro.examples.cloudcontracts</packageWithBaseClasses>
+
+                    <!--
+                        CDC: Option two. If you have a small application with just on rest-resource (or a limited amount of
+                        resources that all require the same base test class) then one base test class will suffice and
+                        we can use the baseClassForTests-property to configure it.
+                    -->
+                    <!-- baseClassForTests>com.example.examples.cloudcontracts.PersonMockedBase</baseClassForTests-->
+
+                    <!--
+                        CDC: The third option is to configure a base test class to be use per contract package using
+                        a regular expression defining the package. This option is used if you need multiple base
+                        test classes and want configuration over convention (option one).
+                     -->
+                    <!--baseClassMappings>
+                        <baseClassMapping>
+                            <contractPackageRegex>.*jaxrs.resources.*</contractPackageRegex>
+                            <baseClassFQN>com.example.examples.cloudcontracts.PersonWiredBase</baseClassFQN>
+                        </baseClassMapping>
+                    </baseClassMappings-->
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
     <dependencyManagement>
         <dependencies>
-            <!-- JUnit regression testing framework. -->
+            <!--<dependency>-->
+                <!--&lt;!&ndash; Import dependency management from Spring Boot &ndash;&gt;-->
+                <!--<groupId>org.springframework.boot</groupId>-->
+                <!--<artifactId>spring-boot-dependencies</artifactId>-->
+                <!--<version>${spring-boot.version}</version>-->
+                <!--<type>pom</type>-->
+                <!--<scope>import</scope>-->
+            <!--</dependency>-->
             <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${version.junit}</version>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-contract-dependencies</artifactId>
+                <version>${spring-cloud-contract.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
+            <!--<dependency>-->
+                <!--<groupId>org.springframework.cloud</groupId>-->
+                <!--<artifactId>spring-cloud-dependencies</artifactId>-->
+                <!--<version>${spring-cloud.version}</version>-->
+                <!--<type>pom</type>-->
+                <!--<scope>import</scope>-->
+            <!--</dependency>-->
         </dependencies>
     </dependencyManagement>
 
@@ -98,10 +183,19 @@
             <artifactId>javax.inject</artifactId>
             <version>1</version>
         </dependency>
-
-
-
-
+        <!-- below includes javax.el:javax.el-api -->
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.el</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <!-- todo : required ? -->
+        <!--<dependency>-->
+        <!--<groupId>javax.enterprise</groupId>-->
+        <!--<artifactId>cdi-api</artifactId>-->
+        <!--<version>2.0</version>-->
+        <!--<scope>provided</scope>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -147,5 +241,64 @@
             <version>${version.mockito}</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- START spring cloud contract test dependencies -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-contract-verifier</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-contract-wiremock</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- END spring cloud contract test dependencies -->
+
+        <!-- START - RestEasy -->
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-undertow</artifactId>
+            <version>${version.resteasy}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-client</artifactId>
+            <version>${version.resteasy}</version>
+            <scope>test</scope>
+        </dependency>
+        <!--dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+            <version>3.9.0}</version>
+            <scope>test</scope>
+        </dependency-->
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jackson2-provider</artifactId>
+            <version>${version.resteasy}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-validator-provider</artifactId>
+            <version>${version.resteasy}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-cdi</artifactId>
+            <version>${version.resteasy}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.servlet</groupId>
+            <artifactId>weld-servlet</artifactId>
+            <version>${version.weld-servlet}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- END - RestEasy -->
     </dependencies>
 </project>

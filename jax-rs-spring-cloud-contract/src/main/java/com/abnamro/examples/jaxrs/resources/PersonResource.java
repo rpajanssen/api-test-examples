@@ -1,16 +1,15 @@
 package com.abnamro.examples.jaxrs.resources;
 
 import com.abnamro.examples.dao.exceptions.DataAccessException;
-import com.abnamro.examples.domain.api.PersistablePerson;
+import com.abnamro.examples.domain.api.Person;
+import com.abnamro.examples.domain.api.SafeList;
 import com.abnamro.examples.jaxrs.bindings.BlackListLastNames;
-import com.abnamro.examples.jaxrs.bindings.CompressData;
 
 import javax.validation.Valid;
 import javax.validation.ValidationException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
 
 /**
  * Interface describing a PersonResource. We can have multiple implementations that now won't have the JAX-RS annotation
@@ -27,7 +26,7 @@ import java.util.List;
  * to decorate the incoming/outgoing response properties, use the interceptors to decorate the response body.
  */
 @Path("/person")
-public interface PersonResource<T extends PersistablePerson> {
+public interface PersonResource<T extends Person> {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/isAlive")
@@ -41,13 +40,13 @@ public interface PersonResource<T extends PersistablePerson> {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/lastName/{lastName}")
-    List<T> findPersonsByLastName(@PathParam("lastName") String lastName) throws DataAccessException;
+    SafeList<T> findPersonsByLastName(@PathParam("lastName") String lastName) throws DataAccessException;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/all")
-    @CompressData
-    List<T> findAllPersons() throws DataAccessException;
+    //@CompressData // todo
+    SafeList<T> findAllPersons() throws DataAccessException;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -63,7 +62,7 @@ public interface PersonResource<T extends PersistablePerson> {
     /**
      * Implements failure scenarios for testing purposes that is the same for all person-resources.
      */
-    default void onSpecificTestInputThrowASpecificException(PersistablePerson person) {
+    default void onSpecificTestInputThrowASpecificException(Person person) {
         if("ohoh".equalsIgnoreCase(person.getFirstName())) {
             throw new ValidationException("demo exception to test validation-exception handler");
         }
