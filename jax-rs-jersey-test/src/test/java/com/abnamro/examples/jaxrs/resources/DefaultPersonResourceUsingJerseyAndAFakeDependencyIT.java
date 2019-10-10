@@ -1,7 +1,6 @@
 package com.abnamro.examples.jaxrs.resources;
 
 import com.abnamro.examples.aspects.Logger;
-import com.abnamro.examples.cdi.InMemoryLogger;
 import com.abnamro.examples.dao.HardCodedPersonDAO;
 import com.abnamro.examples.dao.PersonDAO;
 import com.abnamro.examples.domain.api.Person;
@@ -13,6 +12,7 @@ import com.abnamro.examples.jaxrs.filters.AddCustomHeaderResponseFilter;
 import com.abnamro.examples.jaxrs.filters.RestrictRequestSizeRequestFilter;
 import com.abnamro.examples.jaxrs.interceptors.GZIPWriterInterceptor;
 import com.abnamro.examples.jaxrs.interceptors.RemoveBlacklistedLastNameRequestInterceptor;
+import com.abnamro.examples.utils.InMemoryLogger;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 
