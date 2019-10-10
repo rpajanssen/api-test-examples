@@ -1,4 +1,4 @@
-package contracts.person
+package contracts.person.optimized
 
 import org.springframework.cloud.contract.spec.Contract
 

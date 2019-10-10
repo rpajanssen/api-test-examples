@@ -5,6 +5,7 @@ import com.abnamro.examples.dao.exceptions.InvalidDataException;
 import com.abnamro.examples.domain.api.Person;
 import com.abnamro.examples.domain.api.SafeList;
 import com.abnamro.examples.jaxrs.bindings.BlackListLastNames;
+import com.abnamro.examples.jaxrs.bindings.CompressData;
 
 import javax.validation.Valid;
 import javax.validation.ValidationException;
@@ -46,7 +47,7 @@ public interface PersonResource<T extends Person> {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/all")
-    //@CompressData // todo
+    @CompressData
     SafeList<T> findAllPersons() throws DataAccessException;
 
     @POST

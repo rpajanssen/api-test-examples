@@ -23,4 +23,4 @@ using SpringCloudContract.
 - might not be using the same application container as in prod
 
 - @CompressData : just one resource compressed the data so we need a nother WebTarget -> another base class
-
+  - different base classes are required to support the different http client configurations
