@@ -1,4 +1,4 @@
-package contracts.person.wired
+package contracts.person
 
 import org.springframework.cloud.contract.spec.Contract
 

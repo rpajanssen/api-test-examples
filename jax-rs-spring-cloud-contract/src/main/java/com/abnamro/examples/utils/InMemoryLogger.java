@@ -5,7 +5,7 @@ import com.abnamro.examples.aspects.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FakeLogger implements Logger {
+public class InMemoryLogger implements Logger {
     private static final String LOG_STATEMENT_TEMPLATE = "%s %s";
 
     private static final List<String> LOG_STATEMENTS = new ArrayList<>();

@@ -4,6 +4,7 @@ package com.abnamro.examples.jaxrs.resources;
 import com.abnamro.examples.aspects.EnableTracing;
 import com.abnamro.examples.dao.PersonDAO;
 import com.abnamro.examples.dao.exceptions.DataAccessException;
+import com.abnamro.examples.dao.exceptions.InvalidDataException;
 import com.abnamro.examples.domain.api.Person;
 import com.abnamro.examples.domain.api.SafeList;
 
@@ -69,8 +70,8 @@ public class DefaultPersonResource implements PersonResource<Person> {
      */
     @Override
     @EnableTracing
-    public Person create(Person person) {
-        // should be some persistence code here
+    public Person create(Person person) throws DataAccessException, InvalidDataException {
+        personDAO.add(person);
 
         return person;
     }
@@ -80,10 +81,12 @@ public class DefaultPersonResource implements PersonResource<Person> {
      */
     @Override
     @EnableTracing
-    public Person update(Person person) {
+    public Person update(Person person) throws InvalidDataException, DataAccessException {
         // should be some persistence code here
 
         onSpecificTestInputThrowASpecificException(person);
+
+        personDAO.update(person);
 
         return person;
     }

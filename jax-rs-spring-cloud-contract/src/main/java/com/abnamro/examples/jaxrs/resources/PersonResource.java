@@ -1,6 +1,7 @@
 package com.abnamro.examples.jaxrs.resources;
 
 import com.abnamro.examples.dao.exceptions.DataAccessException;
+import com.abnamro.examples.dao.exceptions.InvalidDataException;
 import com.abnamro.examples.domain.api.Person;
 import com.abnamro.examples.domain.api.SafeList;
 import com.abnamro.examples.jaxrs.bindings.BlackListLastNames;
@@ -52,12 +53,12 @@ public interface PersonResource<T extends Person> {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @BlackListLastNames
-    T create(@Valid T person);
+    T create(@Valid T person) throws DataAccessException, InvalidDataException;
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    T update(@Valid T person);
+    T update(@Valid T person) throws InvalidDataException, DataAccessException;
 
     /**
      * Implements failure scenarios for testing purposes that is the same for all person-resources.

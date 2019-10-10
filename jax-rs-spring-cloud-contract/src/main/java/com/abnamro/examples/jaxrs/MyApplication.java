@@ -6,13 +6,14 @@ import com.abnamro.examples.dao.PersonDAO;
 import com.abnamro.examples.domain.api.Person;
 import com.abnamro.examples.jaxrs.exceptionhandling.ConstraintViolationHandler;
 import com.abnamro.examples.jaxrs.exceptionhandling.DefaultExceptionHandler;
+import com.abnamro.examples.jaxrs.exceptionhandling.InvalidDataExceptionHandler;
 import com.abnamro.examples.jaxrs.exceptionhandling.ValidationExceptionHandler;
 import com.abnamro.examples.jaxrs.filters.AddCustomHeaderResponseFilter;
 import com.abnamro.examples.jaxrs.filters.RestrictRequestSizeRequestFilter;
 import com.abnamro.examples.jaxrs.interceptors.GZIPWriterInterceptor;
 import com.abnamro.examples.jaxrs.interceptors.RemoveBlacklistedLastNameRequestInterceptor;
 import com.abnamro.examples.jaxrs.resources.DefaultPersonResource;
-import com.abnamro.examples.utils.FakeLogger;
+import com.abnamro.examples.utils.InMemoryLogger;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Produces;
@@ -33,7 +34,7 @@ public class MyApplication extends Application {
         Set<Class<?>> classes = new HashSet<>();
         classes.add(DefaultPersonResource.class);
 
-        // todo : from test
+        classes.add(InvalidDataExceptionHandler.class);
         classes.add(ConstraintViolationHandler.class);
         classes.add(ValidationExceptionHandler.class);
         classes.add(DefaultExceptionHandler.class);
@@ -59,6 +60,6 @@ public class MyApplication extends Application {
 
     @Produces
     public Logger logger() {
-        return new FakeLogger();
+        return new InMemoryLogger();
     }
 }

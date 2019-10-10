@@ -1,7 +1,8 @@
 package com.abnamro.examples.cloudcontracts;
 
+import com.abnamro.examples.dao.HardCodedPersonDAO;
 import com.abnamro.examples.jaxrs.MyApplication;
-import com.abnamro.examples.utils.FakeLogger;
+import com.abnamro.examples.utils.InMemoryLogger;
 import com.abnamro.resteasy.InMemoryCdiRestServer;
 import com.abnamro.resteasy.RestClient;
 import org.junit.jupiter.api.AfterEach;
@@ -16,27 +17,16 @@ import static org.assertj.core.api.Assertions.assertThat;
  * CDC: (see the pom.xml for additional documentation) This is a base test class that will be extended by all generated
  * classes derived from the contracts in the "/resources/contracts/person/wired" folder.
  *
- * It will run a fully wired app!!! Since you can only specify the test method once for the complete mvn project/module -
- * see the pom.xml documentation - we know that spring-cloud-contract will generated tests that will run with mock-mvc!
- * To pass on the wired environment to the context the tests will be executed in we need to pass the application context
- * to the mocked environment using RestAssuredMockMvc!
- *
- * Note that normally when having wired tests you do not have to do this! You need to change the test method in the pom
- * to a wired test method!
- *
- * Note that we use DBRider to initialize the database. Since the tests are generated we cannot control the data-sets by
- * adding annotations to the test methods! We can only annotate this base class! We are limited to specify only these
- * data-sets that are applicable for all the generated tests! Alternatives to DBRider are to have a before and after
- * method that initialize/cleanup the database. Be aware that if you use the JPA repository you can't control the ID's
- * of the persisted objects. If you want to control these then you need to use plain JDBC to manage the database
- * content.
+ * It will run a wired app using RestEasy!!! Since you can only specify the test method once for the complete
+ * mvn project/module - see the pom.xml documentation - we know that spring-cloud-contract will generate tests
+ * that will run with a WebTarget and we need to make an instance available in this class!
  */
-
-public abstract class PersonWiredBase {
+public abstract class PersonBase {
     // use the rest-server that supports CDI
     private InMemoryCdiRestServer server;
     private RestClient restClient;
 
+    // todo document : https://cloud.spring.io/spring-cloud-contract/reference/html/project-features.html#features-jax-rs
     protected WebTarget webTarget;
 
     /**
@@ -51,6 +41,9 @@ public abstract class PersonWiredBase {
         restClient = new RestClient(server.getHost(), server.getPort());
 
         webTarget = restClient.target();
+
+        // todo : comment
+        HardCodedPersonDAO.reset();
     }
 
     /**
@@ -65,7 +58,7 @@ public abstract class PersonWiredBase {
         restClient.close();
         server.close();
 
-        FakeLogger.reset();
+        InMemoryLogger.reset();
     }
 
 

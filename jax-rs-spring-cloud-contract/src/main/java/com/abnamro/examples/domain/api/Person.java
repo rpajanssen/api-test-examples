@@ -15,8 +15,8 @@ public class Person {
     @NotEmpty(message = "firstName is not allowed to be empty")
     @Size(min=2, message="firstName should have at least 2 characters")
     private String firstName;
-    @NotEmpty(message = "firstName is not allowed to be empty")
-    @Size(min=2, message="firstName should have at least 2 characters")
+    @NotEmpty(message = "lastName is not allowed to be empty")
+    @Size(min=2, message="lastName should have at least 2 characters")
     private String lastName;
 
     public Person() {
@@ -34,15 +34,33 @@ public class Person {
         this.lastName = lastName;
     }
 
+    public Person(Person original) {
+        this.id = original.getId();
+        this.firstName = original.getFirstName();
+        this.lastName = original.getLastName();
+    }
+
     public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getFirstName() {
         return firstName;
     }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
     public String getLastName() {
         return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 }
