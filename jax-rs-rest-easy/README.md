@@ -35,3 +35,13 @@ mind running them as a unit instead of integration test.
 The execution of the unit tests is done through maven:
 
 ```mvn clean test```
+
+
+
+# pros
+
+
+
+# cons
+
+- bean validation does NOT throw javax.validation.ValidationException so this will not be picked up by our handler

@@ -2,11 +2,12 @@ package com.abnamro.examples.jaxrs.resources;
 
 import com.abnamro.examples.dao.PersonDAO;
 import com.abnamro.examples.domain.api.ErrorResponse;
-import com.abnamro.examples.domain.api.PersistablePerson;
+import com.abnamro.examples.domain.api.Person;
+import com.abnamro.examples.domain.api.SafeList;
 import com.abnamro.examples.jaxrs.MyApplication;
 import com.abnamro.examples.jaxrs.filters.AddCustomHeaderResponseFilter;
 import com.abnamro.examples.jaxrs.interceptors.GZIPReaderInterceptor;
-import com.abnamro.examples.utils.FakeLogger;
+import com.abnamro.examples.utils.InMemoryLogger;
 import com.abnamro.resteasy.RestClient;
 import com.abnamro.utils.SocketUtil;
 import io.undertow.Undertow;
@@ -21,6 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.ws.rs.Produces;
@@ -29,7 +31,6 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -44,7 +45,7 @@ public class BasicPersonResourceUsingRestEasyAndASimpleMockIT {
     private RestClient restClient;
 
     @Mock
-    private PersonDAO<PersistablePerson> personDAO;
+    private PersonDAO<Person> personDAO;
 
     @BeforeEach
     void setup() throws IOException {
@@ -55,7 +56,7 @@ public class BasicPersonResourceUsingRestEasyAndASimpleMockIT {
         deployment.setApplication(new MyApplication() {
             @Override
             @Produces
-            public PersonDAO<PersistablePerson> personDAO() {
+            public PersonDAO<Person> personDAO() {
                 return personDAO;
             }
         });
@@ -78,7 +79,10 @@ public class BasicPersonResourceUsingRestEasyAndASimpleMockIT {
     void teardown() {
         jaxrsServer.stop();
 
-        FakeLogger.reset();
+        InMemoryLogger.reset();
+
+        //noinspection unchecked
+        Mockito.reset(personDAO);
     }
 
     /**
@@ -95,8 +99,8 @@ public class BasicPersonResourceUsingRestEasyAndASimpleMockIT {
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
-        final List<PersistablePerson> result = response.readEntity(new GenericType<List<PersistablePerson>>(){});
-        assertEquals(3, result.size());
+        final SafeList<Person> result = response.readEntity(new GenericType<SafeList<Person>>(){});
+        assertEquals(3, result.getItems().size());
     }
 
     @Test
@@ -105,9 +109,9 @@ public class BasicPersonResourceUsingRestEasyAndASimpleMockIT {
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
-        final PersistablePerson result = response.readEntity(PersistablePerson.class);
+        final Person result = response.readEntity(Person.class);
         assertEquals(1L, result.getId());
-        assertEquals("Roger", result.getFirstName());
+        assertEquals("Jan", result.getFirstName());
         assertEquals("Janssen", result.getLastName());
     }
 
@@ -117,65 +121,65 @@ public class BasicPersonResourceUsingRestEasyAndASimpleMockIT {
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
-        final List<PersistablePerson> result = response.readEntity(new GenericType<List<PersistablePerson>>(){});
-        assertEquals(1, result.size());
-        assertEquals("Roger", result.get(0).getFirstName());
-        assertEquals("Janssen", result.get(0).getLastName());
+        final SafeList<Person> result = response.readEntity(new GenericType<SafeList<Person>>(){});
+        assertEquals(1, result.getItems().size());
+        assertEquals("Jan", result.getItems().get(0).getFirstName());
+        assertEquals("Janssen", result.getItems().get(0).getLastName());
     }
 
 
     @Test
     void shouldTriggerInterceptorToReplaceUnacceptableLastName() {
-        Entity<PersistablePerson> entity = Entity.json(new PersistablePerson(1L, "John", "Asshole"));
+        Entity<Person> entity = Entity.json(new Person(5L, "John", "Asshole"));
         Response response = restClient.newRequest("/person").request().buildPost(entity).invoke();
 
         // verify response of the resource under test
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        final PersistablePerson result = response.readEntity(PersistablePerson.class);
+        final Person result = response.readEntity(Person.class);
         assertEquals("John", result.getFirstName());
         assertEquals("A***e", result.getLastName());
 
         // verify the CDI method interceptor call
-        assertEquals(2, FakeLogger.getLogStatements().size());
-        assertEquals("com.abnamro.examples.jaxrs.resources.DefaultPersonResource entering create", FakeLogger.getLogStatements().get(0));
-        assertEquals("com.abnamro.examples.jaxrs.resources.DefaultPersonResource exiting create", FakeLogger.getLogStatements().get(1));
+        assertEquals(2, InMemoryLogger.getLogStatements().size());
+        assertEquals("com.abnamro.examples.jaxrs.resources.DefaultPersonResource entering create", InMemoryLogger.getLogStatements().get(0));
+        assertEquals("com.abnamro.examples.jaxrs.resources.DefaultPersonResource exiting create", InMemoryLogger.getLogStatements().get(1));
     }
 
     @Test
     void shouldNotTriggerInterceptorToReplaceUnacceptableLastNameIfResourceIsNotBoundToInterceptor() {
-        Entity<PersistablePerson> entity = Entity.json(new PersistablePerson(1L, "John", "Asshole"));
+        Entity<Person> entity = Entity.json(new Person(1L, "John", "Asshole"));
         Response response = restClient.newRequest("/person").request().buildPut(entity).invoke();
 
         // verify response of the resource under test
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        final PersistablePerson result = response.readEntity(PersistablePerson.class);
+        final Person result = response.readEntity(Person.class);
         assertEquals("John", result.getFirstName());
         assertEquals("Asshole", result.getLastName());
 
         // verify the CDI method interceptor call
-        assertEquals(2, FakeLogger.getLogStatements().size());
-        assertEquals("com.abnamro.examples.jaxrs.resources.DefaultPersonResource entering update", FakeLogger.getLogStatements().get(0));
-        assertEquals("com.abnamro.examples.jaxrs.resources.DefaultPersonResource exiting update", FakeLogger.getLogStatements().get(1));
+        assertEquals(2, InMemoryLogger.getLogStatements().size());
+        assertEquals("com.abnamro.examples.jaxrs.resources.DefaultPersonResource entering update", InMemoryLogger.getLogStatements().get(0));
+        assertEquals("com.abnamro.examples.jaxrs.resources.DefaultPersonResource exiting update", InMemoryLogger.getLogStatements().get(1));
     }
 
     @Test
     void shouldReceiveAnErrorResponseWithInvalidLastName() {
-        Entity<PersistablePerson> entity = Entity.json(new PersistablePerson(1L, "John", null));
+        Entity<Person> entity = Entity.json(new Person(1L, "John", null));
         Response response = restClient.newRequest("/person").request().buildPut(entity).invoke();
 
         // verify response of the resource under test
         assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
         final ErrorResponse result = response.readEntity(ErrorResponse.class);
         assertEquals(Response.Status.BAD_REQUEST.name(), result.getCode());
-        assertEquals("update.arg0.lastName lastName is not allowed to be null\n", result.getMessage());
+        assertEquals("update.arg0.lastName lastName is not allowed to be empty\n", result.getMessage());
 
         // verify the CDI method interceptor call
-        assertEquals(0, FakeLogger.getLogStatements().size());
+        assertEquals(0, InMemoryLogger.getLogStatements().size());
     }
 
     @Test
     void shouldReceiveAnErrorResponseFromTheValidationExceptionHandler() {
-        Entity<PersistablePerson> entity = Entity.json(new PersistablePerson(1L, "ohoh", "duh"));
+        Entity<Person> entity = Entity.json(new Person(1L, "ohoh", "duh"));
         Response response = restClient.newRequest("/person").request().buildPut(entity).invoke();
 
         // verify response of the resource under test
@@ -185,13 +189,13 @@ public class BasicPersonResourceUsingRestEasyAndASimpleMockIT {
         assertEquals("demo exception to test validation-exception handler", result.getMessage());
 
         // verify the CDI method interceptor call
-        assertEquals(1, FakeLogger.getLogStatements().size());
-        assertEquals("com.abnamro.examples.jaxrs.resources.DefaultPersonResource entering update", FakeLogger.getLogStatements().get(0));
+        assertEquals(1, InMemoryLogger.getLogStatements().size());
+        assertEquals("com.abnamro.examples.jaxrs.resources.DefaultPersonResource entering update", InMemoryLogger.getLogStatements().get(0));
     }
 
     @Test
     void shouldReceiveAnErrorResponseFromTheDefaultExceptionHandler() {
-        Entity<PersistablePerson> entity = Entity.json(new PersistablePerson(1L, "oops", "duh"));
+        Entity<Person> entity = Entity.json(new Person(1L, "oops", "duh"));
         Response response = restClient.newRequest("/person").request().buildPut(entity).invoke();
 
         // verify response of the resource under test
@@ -203,7 +207,7 @@ public class BasicPersonResourceUsingRestEasyAndASimpleMockIT {
 
     @Test
     void shouldReceiveAnErrorResponseFromTheValidationExceptionHandlerWithMultipleErrorMessages() {
-        Entity<PersistablePerson> entity = Entity.json(new PersistablePerson(1L, null, null));
+        Entity<Person> entity = Entity.json(new Person(1L, null, null));
         Response response = restClient.newRequest("/person").request().buildPut(entity).invoke();
 
         // verify response of the resource under test
@@ -212,17 +216,17 @@ public class BasicPersonResourceUsingRestEasyAndASimpleMockIT {
         assertNotNull(result);
         assertEquals(Response.Status.BAD_REQUEST.name(), result.getCode());
         // note: the order of validations may differ so we do not know the order of the validation messages in the message
-        assertTrue(result.getMessage().contains("update.arg0.lastName lastName is not allowed to be null"));
-        assertTrue(result.getMessage().contains("update.arg0.firstName firstName is not allowed to be null"));
+        assertTrue(result.getMessage().contains("update.arg0.lastName lastName is not allowed to be empty"));
+        assertTrue(result.getMessage().contains("update.arg0.firstName firstName is not allowed to be empty"));
 
         // verify the CDI method interceptor call
-        assertEquals(0, FakeLogger.getLogStatements().size());
+        assertEquals(0, InMemoryLogger.getLogStatements().size());
     }
 
     @Test
     void shouldRejectPersistPersonRequestBecauseRequestIsToLarge() {
-        Entity<PersistablePerson> entity = Entity.json(
-                new PersistablePerson(1L, "Despicable", StringUtils.repeat("Ooops", 250))
+        Entity<Person> entity = Entity.json(
+                new Person(5L, "Despicable", StringUtils.repeat("Ooops", 250))
         );
         Response response = restClient.newRequest("/person").request().buildPost(entity).invoke();
 
@@ -230,7 +234,7 @@ public class BasicPersonResourceUsingRestEasyAndASimpleMockIT {
         assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
 
         // verify the CDI method interceptor call
-        assertEquals(0, FakeLogger.getLogStatements().size());
+        assertEquals(0, InMemoryLogger.getLogStatements().size());
     }
 
     @Test
@@ -244,7 +248,7 @@ public class BasicPersonResourceUsingRestEasyAndASimpleMockIT {
 
     @Test
     void shouldReturnCustomHeaderForPost() {
-        Entity<PersistablePerson> entity = Entity.json(new PersistablePerson(1L, "Despicable", StringUtils.repeat("Ooops", 250)));
+        Entity<Person> entity = Entity.json(new Person(5L, "Despicable", StringUtils.repeat("Ooops", 250)));
         Response result = restClient.newRequest("/person").request().buildPost(entity).invoke();
 
         // verify response of the resource under test
@@ -254,7 +258,7 @@ public class BasicPersonResourceUsingRestEasyAndASimpleMockIT {
 
     @Test
     void shouldReturnCustomHeaderEvenOnBadRequest() {
-        Entity<PersistablePerson> entity = Entity.json(new PersistablePerson(1L, "Despicable", "Me"));
+        Entity<Person> entity = Entity.json(new Person(5L, "Despicable", "Me"));
         Response result = restClient.newRequest("/person").request().buildPost(entity).invoke();
 
         // verify response of the resource under test
