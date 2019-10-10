@@ -1,12 +1,13 @@
 package com.abnamro.examples.jaxrs.resources;
 
 import com.abnamro.examples.aspects.Logger;
-import com.abnamro.examples.cdi.FakeLogger;
+import com.abnamro.examples.cdi.InMemoryLogger;
 import com.abnamro.examples.dao.HardCodedPersonDAO;
 import com.abnamro.examples.dao.PersonDAO;
-import com.abnamro.examples.domain.api.PersistablePerson;
+import com.abnamro.examples.domain.api.Person;
 import com.abnamro.examples.jaxrs.exceptionhandling.ConstraintViolationHandler;
 import com.abnamro.examples.jaxrs.exceptionhandling.DefaultExceptionHandler;
+import com.abnamro.examples.jaxrs.exceptionhandling.InvalidDataExceptionHandler;
 import com.abnamro.examples.jaxrs.exceptionhandling.ValidationExceptionHandler;
 import com.abnamro.examples.jaxrs.filters.AddCustomHeaderResponseFilter;
 import com.abnamro.examples.jaxrs.filters.RestrictRequestSizeRequestFilter;
@@ -29,7 +30,7 @@ import javax.ws.rs.core.GenericType;
  * NOTE : CDI interceptors on resource methods will NOT be triggered. For filtering/interception you should use the
  * JAX-RS filtering/interception mechanism!!!
  */
-public class DefaultPersonResourceUsingJerseyAndAFakeDependencyIT extends AbstractPersonResourceUsingJerseyIT<PersistablePerson> {
+public class DefaultPersonResourceUsingJerseyAndAFakeDependencyIT extends AbstractPersonResourceUsingJerseyIT<Person> {
 
     @Override
     protected ResourceConfig buildResourceConfig() {
@@ -41,6 +42,7 @@ public class DefaultPersonResourceUsingJerseyAndAFakeDependencyIT extends Abstra
         resourceConfig.register(RestrictRequestSizeRequestFilter.class);
         resourceConfig.register(AddCustomHeaderResponseFilter.class);
 
+        resourceConfig.register(InvalidDataExceptionHandler.class);
         resourceConfig.register(ConstraintViolationHandler.class);
         resourceConfig.register(ValidationExceptionHandler.class);
         resourceConfig.register(DefaultExceptionHandler.class);
@@ -53,9 +55,9 @@ public class DefaultPersonResourceUsingJerseyAndAFakeDependencyIT extends Abstra
         AbstractBinder binder = new AbstractBinder() {
             @Override
             protected void configure() {
-                bind(HardCodedPersonDAO.class).to(new GenericType<PersonDAO<PersistablePerson>>(){});
+                bind(HardCodedPersonDAO.class).to(new GenericType<PersonDAO<Person>>(){});
 
-                bind(FakeLogger.class).to(Logger.class);
+                bind(InMemoryLogger.class).to(Logger.class);
             }
         };
 

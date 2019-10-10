@@ -1,7 +1,7 @@
 package com.abnamro.examples.dao;
 
 import com.abnamro.examples.dao.exceptions.DataAccessException;
-import com.abnamro.examples.domain.api.PersistablePerson;
+import com.abnamro.examples.domain.api.Person;
 import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
 
@@ -26,21 +26,21 @@ public final class PersonFinderMocker {
         throw new UnsupportedOperationException(ERROR_MESSAGE_CONSTRUCTOR);
     }
 
-    public static <T extends PersistablePerson> void mockPersonFinder(
+    public static <T extends Person> void mockPersonFinder(
             final PersonDAO<T> personDAO, final Constructor<T> constructor
     ) throws DataAccessException {
         Mockito.when(personDAO.findAll()).thenAnswer((Answer<List<T>>) invocation -> Arrays.asList(
-                constructor.newInstance(1L, "Roger", "Janssen"),
-                constructor.newInstance(2L, "Pietje", "Puk"),
-                constructor.newInstance(3L, "Jan", "Pietersen")
+                constructor.newInstance(1L, "Jan", "Janssen"),
+                constructor.newInstance(2L, "Pieter", "Pietersen"),
+                constructor.newInstance(3L, "Erik", "Eriksen")
         ));
 
         Mockito.when(personDAO.findById(eq(1L))).thenAnswer(
-                (Answer<T>) invocation -> constructor.newInstance(1L, "Roger", "Janssen")
+                (Answer<T>) invocation -> constructor.newInstance(1L, "Jan", "Janssen")
         );
 
         Mockito.when(personDAO.findWithLastName(eq("Janssen"))).thenAnswer(
-                (Answer<List<T>>) invocation -> Collections.singletonList(constructor.newInstance(1L, "Roger", "Janssen"))
+                (Answer<List<T>>) invocation -> Collections.singletonList(constructor.newInstance(1L, "Jan", "Janssen"))
         );
     }
 }

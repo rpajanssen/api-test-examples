@@ -3,9 +3,10 @@ package com.abnamro.examples.jaxrs.resources;
 import com.abnamro.examples.dao.PersonDAO;
 import com.abnamro.examples.dao.PersonFinderMocker;
 import com.abnamro.examples.dao.exceptions.DataAccessException;
-import com.abnamro.examples.domain.api.PersistablePerson;
+import com.abnamro.examples.domain.api.Person;
 import com.abnamro.examples.jaxrs.exceptionhandling.ConstraintViolationHandler;
 import com.abnamro.examples.jaxrs.exceptionhandling.DefaultExceptionHandler;
+import com.abnamro.examples.jaxrs.exceptionhandling.InvalidDataExceptionHandler;
 import com.abnamro.examples.jaxrs.exceptionhandling.ValidationExceptionHandler;
 import com.abnamro.examples.jaxrs.filters.AddCustomHeaderResponseFilter;
 import com.abnamro.examples.jaxrs.filters.RestrictRequestSizeRequestFilter;
@@ -30,7 +31,7 @@ import java.util.function.Supplier;
  * NOTE : CDI interceptors on resource methods will NOT be triggered. For filtering/interception you should use the
  * JAX-RS filtering/interception mechanism!!!
  */
-public class DefaultPersonResourceUsingJerseyAndAMockFactoryIT extends AbstractPersonResourceUsingJerseyIT<PersistablePerson> {
+public class DefaultPersonResourceUsingJerseyAndAMockFactoryIT extends AbstractPersonResourceUsingJerseyIT<Person> {
     @Override
     protected ResourceConfig buildResourceConfig() {
         return new ResourceConfig(DefaultPersonResource.class);
@@ -41,6 +42,7 @@ public class DefaultPersonResourceUsingJerseyAndAMockFactoryIT extends AbstractP
         resourceConfig.register(RestrictRequestSizeRequestFilter.class);
         resourceConfig.register(AddCustomHeaderResponseFilter.class);
 
+        resourceConfig.register(InvalidDataExceptionHandler.class);
         resourceConfig.register(ConstraintViolationHandler.class);
         resourceConfig.register(ValidationExceptionHandler.class);
         resourceConfig.register(DefaultExceptionHandler.class);
@@ -53,7 +55,7 @@ public class DefaultPersonResourceUsingJerseyAndAMockFactoryIT extends AbstractP
         AbstractBinder binder = new AbstractBinder() {
             @Override
             protected void configure() {
-                bindFactory(MockPersonFinderFactory.class).to(new GenericType<PersonDAO<PersistablePerson>>(){});
+                bindFactory(MockPersonFinderFactory.class).to(new GenericType<PersonDAO<Person>>(){});
             }
         };
 
@@ -61,12 +63,12 @@ public class DefaultPersonResourceUsingJerseyAndAMockFactoryIT extends AbstractP
     }
 
     @SuppressWarnings("unchecked")
-    static class MockPersonFinderFactory implements Supplier<PersonDAO<PersistablePerson>> {
+    static class MockPersonFinderFactory implements Supplier<PersonDAO<Person>> {
         @Override
-        public PersonDAO<PersistablePerson> get() {
-            final PersonDAO<PersistablePerson> personDAO = (PersonDAO<PersistablePerson>)Mockito.mock(PersonDAO.class);
+        public PersonDAO<Person> get() {
+            final PersonDAO<Person> personDAO = (PersonDAO<Person>)Mockito.mock(PersonDAO.class);
             try {
-                PersonFinderMocker.mockPersonFinder(personDAO, PersistablePerson.class.getConstructor(Long.TYPE, String.class, String.class));
+                PersonFinderMocker.mockPersonFinder(personDAO, Person.class.getConstructor(Long.TYPE, String.class, String.class));
             } catch (DataAccessException | NoSuchMethodException e) {
                 throw new IllegalStateException(e.getMessage(), e);
             }

@@ -1,20 +1,22 @@
 package com.abnamro.examples.jaxrs.resources;
 
+import com.abnamro.examples.dao.HardCodedPersonDAO;
 import com.abnamro.examples.domain.api.ErrorResponse;
-import com.abnamro.examples.domain.api.PersistablePerson;
+import com.abnamro.examples.domain.api.Person;
+import com.abnamro.examples.domain.api.SafeList;
 import com.abnamro.examples.jaxrs.filters.AddCustomHeaderResponseFilter;
 import com.abnamro.examples.jaxrs.interceptors.GZIPReaderInterceptor;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
+import org.junit.After;
 import org.junit.Test;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.*;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -28,7 +30,7 @@ import static org.junit.Assert.*;
  * Note that we have generified this class so we can use it for two different PersonResource implementations even
  * returning different json responses (a different person model).
  */
-public abstract class AbstractPersonResourceUsingJerseyIT<T extends PersistablePerson> extends JerseyTest {
+public abstract class AbstractPersonResourceUsingJerseyIT<T extends Person> extends JerseyTest {
 
     @Override
     protected Application configure() {
@@ -43,6 +45,11 @@ public abstract class AbstractPersonResourceUsingJerseyIT<T extends PersistableP
     protected abstract ResourceConfig buildResourceConfig();
     protected abstract ResourceConfig registerServerDependencies(ResourceConfig resourceConfig);
 
+    @After
+    public void cleanup() {
+        HardCodedPersonDAO.reset();
+    }
+
     @Test
     public void shouldReturnOkIfResourceIsHealthy() {
         Response response = target("person/isAlive").request().get();
@@ -56,20 +63,20 @@ public abstract class AbstractPersonResourceUsingJerseyIT<T extends PersistableP
 
     @Test
     public void shouldReturnPersonWithId() {
-        final PersistablePerson result = target("person/1").request().get(PersistablePerson.class);
+        final Person result = target("person/1").request().get(Person.class);
 
         assertEquals(1L, result.getId());
-        assertEquals("Roger", result.getFirstName());
+        assertEquals("Jan", result.getFirstName());
         assertEquals("Janssen", result.getLastName());
     }
 
     @Test
     public void shouldReturnAllPersonsWithLastNameJanssen() {
-        final List<T> result = target("person/lastName/Janssen").request().get(new GenericType<List<T>>(){});
+        final SafeList<T> result = target("person/lastName/Janssen").request().get(new GenericType<SafeList<T>>(){});
 
-        assertEquals(1, result.size());
-        assertEquals("Roger", result.get(0).getFirstName());
-        assertEquals("Janssen", result.get(0).getLastName());
+        assertEquals(1, result.getItems().size());
+        assertEquals("Jan", result.getItems().get(0).getFirstName());
+        assertEquals("Janssen", result.getItems().get(0).getLastName());
     }
 
     /**
@@ -82,21 +89,21 @@ public abstract class AbstractPersonResourceUsingJerseyIT<T extends PersistableP
         // note : register the incoming response unzipper for the jax-rs client jersey-test uses to call our server under-test
         client().register(GZIPReaderInterceptor.class);
 
-        final List<T> result = target("person/all").request().get(new GenericType<List<T>>(){});
+        final SafeList<T> result = target("person/all").request().get(new GenericType<SafeList<T>>(){});
 
-        assertEquals(3, result.size());
-        assertEquals("Roger", result.get(0).getFirstName());
-        assertEquals("Janssen", result.get(0).getLastName());
-        assertEquals("Pietje", result.get(1).getFirstName());
-        assertEquals("Puk", result.get(1).getLastName());
-        assertEquals("Jan", result.get(2).getFirstName());
-        assertEquals("Pietersen", result.get(2).getLastName());
+        assertEquals(3, result.getItems().size());
+        assertEquals("Jan", result.getItems().get(0).getFirstName());
+        assertEquals("Janssen", result.getItems().get(0).getLastName());
+        assertEquals("Pieter", result.getItems().get(1).getFirstName());
+        assertEquals("Pietersen", result.getItems().get(1).getLastName());
+        assertEquals("Erik", result.getItems().get(2).getFirstName());
+        assertEquals("Eriksen", result.getItems().get(2).getLastName());
     }
 
     @Test
     public void shouldPersistPerson() {
-        Entity<PersistablePerson> entity = Entity.json(new PersistablePerson(1L, "Despicable", "Me"));
-        PersistablePerson result = target("person").request().post(entity, new GenericType<PersistablePerson>(){});
+        Entity<Person> entity = Entity.json(new Person(5L, "Despicable", "Me"));
+        Person result = target("person").request().post(entity, new GenericType<Person>(){});
 
         assertEquals("Despicable", result.getFirstName());
         assertEquals("Me", result.getLastName());
@@ -104,7 +111,7 @@ public abstract class AbstractPersonResourceUsingJerseyIT<T extends PersistableP
 
     @Test
     public void shouldRejectPersistPersonRequestBecauseRequestIsToLarge() {
-        Entity<PersistablePerson> entity = Entity.json(new PersistablePerson(1L, "Despicable", StringUtils.repeat("Ooops", 250)));
+        Entity<Person> entity = Entity.json(new Person(5L, "Despicable", StringUtils.repeat("Ooops", 250)));
         Response result = target("person").request().post(entity);
 
         assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), result.getStatus());
@@ -120,7 +127,7 @@ public abstract class AbstractPersonResourceUsingJerseyIT<T extends PersistableP
 
     @Test
     public void shouldReturnCustomHeaderForPost() {
-        Entity<PersistablePerson> entity = Entity.json(new PersistablePerson(1L, "Despicable", StringUtils.repeat("Ooops", 250)));
+        Entity<Person> entity = Entity.json(new Person(5L, "Despicable", StringUtils.repeat("Ooops", 250)));
         Response result = target("person").request().post(entity);
 
         assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), result.getStatus());
@@ -129,7 +136,7 @@ public abstract class AbstractPersonResourceUsingJerseyIT<T extends PersistableP
 
     @Test
     public void shouldReturnCustomHeaderEvenOnBadRequest() {
-        Entity<PersistablePerson> entity = Entity.json(new PersistablePerson(1L, "Despicable", "Me"));
+        Entity<Person> entity = Entity.json(new Person(5L, "Despicable", "Me"));
         Response result = target("person").request().post(entity);
 
         assertEquals(Response.Status.OK.getStatusCode(), result.getStatus());
@@ -138,8 +145,8 @@ public abstract class AbstractPersonResourceUsingJerseyIT<T extends PersistableP
 
     @Test
     public void shouldTriggerInterceptorToReplaceUnacceptableLastName() {
-        Entity<PersistablePerson> entity = Entity.json(new PersistablePerson(1L, "John", "Asshole"));
-        PersistablePerson result = target("person").request().post(entity, new GenericType<PersistablePerson>(){});
+        Entity<Person> entity = Entity.json(new Person(5L, "John", "Asshole"));
+        Person result = target("person").request().post(entity, new GenericType<Person>(){});
 
         assertEquals("John", result.getFirstName());
         assertEquals("A***e", result.getLastName());
@@ -147,8 +154,8 @@ public abstract class AbstractPersonResourceUsingJerseyIT<T extends PersistableP
 
     @Test
     public void shouldNotTriggerInterceptorToReplaceUnacceptableLastNameIfResourceIsNotBoundToInterceptor() {
-        Entity<PersistablePerson> entity = Entity.json(new PersistablePerson(1L, "John", "Asshole"));
-        PersistablePerson result = target("person").request().put(entity, new GenericType<PersistablePerson>(){});
+        Entity<Person> entity = Entity.json(new Person(1L, "John", "Asshole"));
+        Person result = target("person").request().put(entity, new GenericType<Person>(){});
 
         assertEquals("John", result.getFirstName());
         assertEquals("Asshole", result.getLastName());
@@ -157,10 +164,10 @@ public abstract class AbstractPersonResourceUsingJerseyIT<T extends PersistableP
     @Test
     public void shouldThrowAnExceptionWhenAutomaticMarshallingIsUsedAndAConstraintErrorResponseIsReceived() {
         try {
-            Entity<PersistablePerson> entity = Entity.json(new PersistablePerson(1L, "John", null));
+            Entity<Person> entity = Entity.json(new Person(1L, "John", null));
             // note: strongly typed statement below expects a Person but... we know it will be an ErrorResponse but
             //       luckily our client transforms the response into an exception!
-            PersistablePerson result = target("person").request().put(entity, new GenericType<PersistablePerson>() {});
+            Person result = target("person").request().put(entity, new GenericType<Person>() {});
 
             fail("a bad-request-exception should have been thrown");
         } catch (BadRequestException exception) {
@@ -172,10 +179,10 @@ public abstract class AbstractPersonResourceUsingJerseyIT<T extends PersistableP
     @Test
     public void shouldThrowAnExceptionWhenAutomaticMarshallingIsUsedAndAnValidationErrorResponseIsReceived() {
         try {
-            Entity<PersistablePerson> entity = Entity.json(new PersistablePerson(1L, "ohoh", "duh"));
+            Entity<Person> entity = Entity.json(new Person(1L, "ohoh", "duh"));
             // note: strongly typed statement below expects a Person but... we know it will be an ErrorResponse but
             //       luckily our client transforms the response into an exception!
-            PersistablePerson result = target("person").request().put(entity, new GenericType<PersistablePerson>() {});
+            Person result = target("person").request().put(entity, new GenericType<Person>() {});
 
             fail("a bad-request-exception should have been thrown");
         } catch (BadRequestException exception) {
@@ -187,10 +194,10 @@ public abstract class AbstractPersonResourceUsingJerseyIT<T extends PersistableP
     @Test
     public void shouldThrowAnExceptionWhenAutomaticMarshallingIsUsedAndAnGenericErrorResponseIsReceived() {
         try {
-            Entity<PersistablePerson> entity = Entity.json(new PersistablePerson(1L, "oops", "duh"));
+            Entity<Person> entity = Entity.json(new Person(1L, "oops", "duh"));
             // note: strongly typed statement below expects a Person but... we know it will be an ErrorResponse but
             //       luckily our client transforms the response into an exception!
-            PersistablePerson result = target("person").request().put(entity, new GenericType<PersistablePerson>() {});
+            Person result = target("person").request().put(entity, new GenericType<Person>() {});
 
             fail("a bad-request-exception should have been thrown");
         } catch (InternalServerErrorException exception) {
@@ -201,7 +208,7 @@ public abstract class AbstractPersonResourceUsingJerseyIT<T extends PersistableP
 
     @Test
     public void shouldAcceptConstraintErrorResponseWithoutAutomaticMarshalling() {
-        Entity<PersistablePerson> entity = Entity.json(new PersistablePerson(1L, null, null));
+        Entity<Person> entity = Entity.json(new Person(1L, null, null));
         Response result = target("person").request().put(entity);
 
         // we know this test should result in in error-response so we anticipate on it
@@ -210,13 +217,13 @@ public abstract class AbstractPersonResourceUsingJerseyIT<T extends PersistableP
         assertNotNull(errorResponse);
         assertEquals("BAD_REQUEST", errorResponse.getCode());
         // note: the order of validations may differ so we do not know the order of the validation messages in the message
-        assertTrue(errorResponse.getMessage().contains("update.arg0.lastName lastName is not allowed to be null"));
-        assertTrue(errorResponse.getMessage().contains("update.arg0.firstName firstName is not allowed to be null"));
+        assertTrue(errorResponse.getMessage().contains("update.arg0.lastName lastName is not allowed to be empty"));
+        assertTrue(errorResponse.getMessage().contains("update.arg0.firstName firstName is not allowed to be empty"));
     }
 
     @Test
     public void shouldAcceptValidationErrorResponseWithoutAutomaticMarshalling() {
-        Entity<PersistablePerson> entity = Entity.json(new PersistablePerson(1L, "ohoh", "duh"));
+        Entity<Person> entity = Entity.json(new Person(1L, "ohoh", "duh"));
         Response result = target("person").request().put(entity);
 
         // we know this test should result in in error-response so we anticipate on it
@@ -229,7 +236,7 @@ public abstract class AbstractPersonResourceUsingJerseyIT<T extends PersistableP
 
     @Test
     public void shouldAcceptServiceErrorResponseWithoutAutomaticMarshalling() {
-        Entity<PersistablePerson> entity = Entity.json(new PersistablePerson(1L, "oops", "duh"));
+        Entity<Person> entity = Entity.json(new Person(1L, "oops", "duh"));
         Response result = target("person").request().put(entity);
 
         // we know this test should result in in error-response so we anticipate on it

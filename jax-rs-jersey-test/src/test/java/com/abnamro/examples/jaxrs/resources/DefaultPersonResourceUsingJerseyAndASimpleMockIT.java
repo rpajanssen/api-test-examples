@@ -3,9 +3,10 @@ package com.abnamro.examples.jaxrs.resources;
 import com.abnamro.examples.dao.PersonDAO;
 import com.abnamro.examples.dao.PersonFinderMocker;
 import com.abnamro.examples.dao.exceptions.DataAccessException;
-import com.abnamro.examples.domain.api.PersistablePerson;
+import com.abnamro.examples.domain.api.Person;
 import com.abnamro.examples.jaxrs.exceptionhandling.ConstraintViolationHandler;
 import com.abnamro.examples.jaxrs.exceptionhandling.DefaultExceptionHandler;
+import com.abnamro.examples.jaxrs.exceptionhandling.InvalidDataExceptionHandler;
 import com.abnamro.examples.jaxrs.exceptionhandling.ValidationExceptionHandler;
 import com.abnamro.examples.jaxrs.filters.AddCustomHeaderResponseFilter;
 import com.abnamro.examples.jaxrs.filters.RestrictRequestSizeRequestFilter;
@@ -30,17 +31,17 @@ import javax.ws.rs.core.GenericType;
  * NOTE : CDI interceptors on resource methods will NOT be triggered. For filtering/interception you should use the
  * JAX-RS filtering/interception mechanism!!!
  */
-public class DefaultPersonResourceUsingJerseyAndASimpleMockIT extends AbstractPersonResourceUsingJerseyIT<PersistablePerson> {
+public class DefaultPersonResourceUsingJerseyAndASimpleMockIT extends AbstractPersonResourceUsingJerseyIT<Person> {
 
     // note: we explicitly need to cast the mock instance to the required generic type otherwise the injection framework
     //       will not find our mock instance
     @SuppressWarnings("unchecked")
-    private PersonDAO<PersistablePerson> personDAO = (PersonDAO<PersistablePerson>)Mockito.mock(PersonDAO.class);
+    private PersonDAO<Person> personDAO = (PersonDAO<Person>)Mockito.mock(PersonDAO.class);
 
     @SuppressWarnings("unchecked")
     @Before
     public void setup() throws DataAccessException, NoSuchMethodException {
-        PersonFinderMocker.mockPersonFinder(personDAO, PersistablePerson.class.getConstructor(Long.TYPE, String.class, String.class));
+        PersonFinderMocker.mockPersonFinder(personDAO, Person.class.getConstructor(Long.TYPE, String.class, String.class));
     }
 
     @Override
@@ -53,6 +54,7 @@ public class DefaultPersonResourceUsingJerseyAndASimpleMockIT extends AbstractPe
         resourceConfig.register(RestrictRequestSizeRequestFilter.class);
         resourceConfig.register(AddCustomHeaderResponseFilter.class);
 
+        resourceConfig.register(InvalidDataExceptionHandler.class);
         resourceConfig.register(ConstraintViolationHandler.class);
         resourceConfig.register(ValidationExceptionHandler.class);
         resourceConfig.register(DefaultExceptionHandler.class);
@@ -65,7 +67,7 @@ public class DefaultPersonResourceUsingJerseyAndASimpleMockIT extends AbstractPe
         AbstractBinder binder = new AbstractBinder() {
             @Override
             protected void configure() {
-                bind(personDAO).to(new GenericType<PersonDAO<PersistablePerson>>(){});
+                bind(personDAO).to(new GenericType<PersonDAO<Person>>(){});
             }
         };
 

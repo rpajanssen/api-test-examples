@@ -4,11 +4,12 @@ package com.abnamro.examples.jaxrs.resources;
 import com.abnamro.examples.aspects.EnableTracing;
 import com.abnamro.examples.dao.PersonDAO;
 import com.abnamro.examples.dao.exceptions.DataAccessException;
-import com.abnamro.examples.domain.api.PersistablePerson;
+import com.abnamro.examples.dao.exceptions.InvalidDataException;
+import com.abnamro.examples.domain.api.Person;
+import com.abnamro.examples.domain.api.SafeList;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.util.List;
 
 /**
  * JAX-RS resource used to demo the testability of such a resource. The JAX-RS API is defined in the PersonResource
@@ -25,16 +26,16 @@ import java.util.List;
  * We added the usage of the Tracer using the CDI interceptor and will demonstrate that we can test JAX-RS interceptors
  * as well as CDI method interceptors with RestEasy.
  */
-public class DefaultPersonResource implements PersonResource<PersistablePerson> {
+public class DefaultPersonResource implements PersonResource<Person> {
 
-    private PersonDAO<PersistablePerson> personDAO;
+    private PersonDAO<Person> personDAO;
 
     public DefaultPersonResource() {
         // required by arquillian test to enable proxy creation
     }
 
     @Inject
-    public DefaultPersonResource(final PersonDAO<PersistablePerson> personDAO) {
+    public DefaultPersonResource(final PersonDAO<Person> personDAO) {
         this.personDAO = personDAO;
     }
 
@@ -45,14 +46,14 @@ public class DefaultPersonResource implements PersonResource<PersistablePerson> 
 
     @Override
     @EnableTracing
-    public PersistablePerson findById(long id) throws DataAccessException {
+    public Person findById(long id) throws DataAccessException {
         return personDAO.findById(id);
     }
 
     @Override
     @EnableTracing
-    public List<PersistablePerson> findPersonsByLastName(String lastName) throws DataAccessException {
-        return personDAO.findWithLastName(lastName);
+    public SafeList<Person> findPersonsByLastName(String lastName) throws DataAccessException {
+        return new SafeList<>(personDAO.findWithLastName(lastName));
     }
 
     /**
@@ -60,8 +61,8 @@ public class DefaultPersonResource implements PersonResource<PersistablePerson> 
      */
     @Override
     @EnableTracing
-    public List<PersistablePerson> findAllPersons() throws DataAccessException {
-        return personDAO.findAll();
+    public SafeList<Person> findAllPersons() throws DataAccessException {
+        return new SafeList<>(personDAO.findAll());
     }
 
     /**
@@ -69,8 +70,8 @@ public class DefaultPersonResource implements PersonResource<PersistablePerson> 
      */
     @Override
     @EnableTracing
-    public PersistablePerson create(PersistablePerson person) {
-        // should be some persistence code here
+    public Person create(Person person) throws DataAccessException, InvalidDataException {
+        personDAO.add(person);
 
         return person;
     }
@@ -80,10 +81,12 @@ public class DefaultPersonResource implements PersonResource<PersistablePerson> 
      */
     @Override
     @EnableTracing
-    public PersistablePerson update(PersistablePerson person) {
+    public Person update(Person person) throws InvalidDataException, DataAccessException {
         // should be some persistence code here
 
         onSpecificTestInputThrowASpecificException(person);
+
+        personDAO.update(person);
 
         return person;
     }

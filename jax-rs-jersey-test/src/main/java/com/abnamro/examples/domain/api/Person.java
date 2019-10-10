@@ -2,7 +2,8 @@ package com.abnamro.examples.domain.api;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 /**
  * Can you guess why there are no setters?
@@ -18,38 +19,58 @@ import javax.validation.constraints.NotNull;
  * class will not run into runtime deserialization exceptions.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PersistablePerson {
+public class Person {
     private long id;
 
-    @NotNull(message = "firstName is not allowed to be null")
+    @NotEmpty(message = "firstName is not allowed to be empty")
+    @Size(min=2, message="firstName should have at least 2 characters")
     private String firstName;
-    @NotNull(message = "lastName is not allowed to be null")
+    @NotEmpty(message = "lastName is not allowed to be empty")
+    @Size(min=2, message="lastName should have at least 2 characters")
     private String lastName;
 
-    public PersistablePerson() {
+    public Person() {
         // only here for (de)serialization frameworks
     }
 
-    public PersistablePerson(final String firstName, final String lastName) {
+    public Person(final String firstName, final String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
     }
 
-    public PersistablePerson(long id, final String firstName, final String lastName) {
+    public Person(long id, final String firstName, final String lastName) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
+    }
+
+    public Person(Person original) {
+        this.id = original.getId();
+        this.firstName = original.getFirstName();
+        this.lastName = original.getLastName();
     }
 
     public long getId() {
         return id;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public String getFirstName() {
         return firstName;
     }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
     public String getLastName() {
         return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 }
