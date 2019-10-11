@@ -25,7 +25,8 @@ Feature: Setup the environment before a person REST API scenario is executed
       | 'Erik' |  'Eriksen' |
 
   Scenario:
-    * def result = call read('add_person.feature') persons
+    * def featureFile = supportFolderPath + 'add_person.feature'
+    * def result = call read(featureFile) persons
     * def created = $result[*].response
     * match each created == { id: '#number', firstName: '#string', lastName: '#string' }
     * match created[*].firstName contains only ['Jan', 'Pieter', 'Erik']

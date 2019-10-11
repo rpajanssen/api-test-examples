@@ -20,5 +20,7 @@ Feature: cleanup the environment after a person REST API scenario is executed
     When method GET
     Then status 200
 
-    * def allPersons = $result[*].response.items
-    * call read('delete_person.feature') allPersons
+    * def allPersons = response.items
+    * def featureFile = supportFolderPath + 'delete_person.feature'
+    * call read(featureFile) allPersons
+    #* karate.call(featureFile, allPersons);

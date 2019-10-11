@@ -23,11 +23,11 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>8</java.version>
+        <java.version>11</java.version>
 
         <spring-boot.version>2.1.6.RELEASE</spring-boot.version>
 
-        <karate.version>0.9.4</karate.version>
+        <karate.version>0.9.5.RC3</karate.version>
 
         <junit.jupiter.version>5.5.0</junit.jupiter.version>
         <rider-spring.version>1.7.2</rider-spring.version>
@@ -36,10 +36,8 @@
 
         <surefire.maven.plugin.version>2.22.2</surefire.maven.plugin.version>
 
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-
-        <snippetsDirectory>${project.build.directory}/snippets</snippetsDirectory>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
 	</properties>
 
 	<dependencyManagement>
@@ -149,6 +147,14 @@
             </exclusions>
         </dependency-->
         <!-- END - karate requirements -->
+
+        <!-- todo -->
+        <dependency>
+            <groupId>net.masterthought</groupId>
+            <artifactId>cucumber-reporting</artifactId>
+            <version>4.10.0</version>
+        </dependency>
+
 
         <dependency>
             <groupId>com.github.database-rider</groupId>

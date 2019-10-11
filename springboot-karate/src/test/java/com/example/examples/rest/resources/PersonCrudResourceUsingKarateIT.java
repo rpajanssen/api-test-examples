@@ -6,6 +6,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 
+import java.io.File;
+
 
 /**
  * Runner for the Karate features.
@@ -32,6 +34,9 @@ import org.junit.jupiter.api.Disabled;
  * a validation ourselves and stop execution of these methods if we have ignored this class.
  */
 class PersonCrudResourceUsingKarateIT {
+    // todo : comment
+    private static final String supportFolderPath = ".." + File.separator + "support" + File.separator;
+    private static final String featureFolderPath = "classpath:karate" + File.separator + "person" + File.separator + "features";
 
     @BeforeAll
     static void startup() {
@@ -44,6 +49,8 @@ class PersonCrudResourceUsingKarateIT {
         // fetch the application port and set a system property we can use in the karate-config.js
         String baseUrl = "http://localhost:" + ApplicationStarter.getPort();
         System.setProperty("baseUrl", baseUrl);
+
+        System.setProperty("supportFolderPath", supportFolderPath);
     }
 
     @AfterAll
@@ -62,7 +69,21 @@ class PersonCrudResourceUsingKarateIT {
     @Karate.Test
     Karate runAllPersonFeatures() {
         return new Karate()
-                .feature("classpath:karate/person")
-                .tags("~@ignore");
+                .feature(featureFolderPath)
+                .tags("~@ignore")
+                ;
+
     }
+
+//    private static void generateReport() {
+//        Collection<File> jsonFiles = FileUtils.listFiles(new File("target/surefire-reports"), new String[] {"json"}, true);
+//        List jsonPaths = new ArrayList(jsonFiles.size());
+//        for (File file : jsonFiles) {
+//            jsonPaths.add(file.getAbsolutePath());
+//        }
+//        Configuration config = new Configuration(new File("target"), "YOUR PROJECT NAME");
+//        config.addClassifications("Environment", System.getProperty("karate.env"));
+//        ReportBuilder reportBuilder = new ReportBuilder(jsonPaths, config);
+//        reportBuilder.generateReports();
+//    }
 }

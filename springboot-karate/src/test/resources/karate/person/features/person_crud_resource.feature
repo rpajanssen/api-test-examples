@@ -1,12 +1,18 @@
+@parallel=false
 Feature: Testing the Person REST API with Karate
 
   Background:
     # set the base url to be used for each scenario, if a scenario omits its local path only the base url will be used
     * url testBaseUrl + '/api/person'
     # execute the before_each_person_scenario.feature before each scenario, the JUnit @Before equivalent
-    * call read('before_each_person_scenario.feature')
+    * def beforeScenarioFile = supportFolderPath + 'before_each_person_scenario.feature'
+    * call read(beforeScenarioFile)
+    # todo : comment
+    # see  : https://github.com/intuit/karate/issues/919
     # execute the after_each_person_scenario.feature after each scenario, the JUnit @After equivalent
-    * configure afterScenario = function(){ karate.call('after_each_person_scenario.feature'); }
+    * def afterScenarioFile = supportFolderPath + 'after_each_person_scenario.feature'
+    # * configure afterScenario = function(){ karate.call(afterScenarioFile'); }
+    * configure afterFeature = function(){ karate.call(afterScenarioFile); }
 
   Scenario: Should return all the persons
     When method GET
@@ -30,6 +36,7 @@ Feature: Testing the Person REST API with Karate
     When method put
     Then status 400
     And match response.code == "0020"
+    And match response == { "data":{ id:1003, "firstName":null,"lastName":"Erikson" },"code":"0020" }
 
   Scenario: Should delete a person
     Given path "/1002"
