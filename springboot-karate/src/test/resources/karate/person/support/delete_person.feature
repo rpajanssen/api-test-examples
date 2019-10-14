@@ -15,8 +15,6 @@ Feature: common reusable feature to delete a person
     * url testBaseUrl + '/api/person'
 
   Scenario:
-    #* print __arg
-    #* print 'ID=' + id
     Given path '/' + id
     When method delete
     Then status 202

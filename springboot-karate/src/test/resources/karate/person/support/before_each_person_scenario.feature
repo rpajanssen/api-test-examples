@@ -13,7 +13,7 @@
 # - using a table,
 # - using a collection of arguments with automatic iteration over the collection,
 # - capturing a set of responses,
-# - performing a bit more complex assertions on a set of responses.
+# - performing more complex assertions on a set of responses.
 @ignore
 Feature: Setup the environment before a person REST API scenario is executed
 

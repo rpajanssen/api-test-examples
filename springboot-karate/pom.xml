@@ -28,6 +28,7 @@
         <spring-boot.version>2.1.6.RELEASE</spring-boot.version>
 
         <karate.version>0.9.5.RC3</karate.version>
+        <cucumber-reporting.version>4.10.0</cucumber-reporting.version>
 
         <junit.jupiter.version>5.5.0</junit.jupiter.version>
         <rider-spring.version>1.7.2</rider-spring.version>
@@ -152,7 +153,7 @@
         <dependency>
             <groupId>net.masterthought</groupId>
             <artifactId>cucumber-reporting</artifactId>
-            <version>4.10.0</version>
+            <version>${cucumber-reporting.version}</version>
         </dependency>
 
 

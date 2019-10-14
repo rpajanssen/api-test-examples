@@ -105,8 +105,6 @@ class PersonCrudResourceUsingKarateRunningTestInParallelIT {
         assertTrue(results.getErrorMessages(), results.getFailCount() == 0);
     }
 
-//    https://www.testingexcellence.com/karate-api-testing-tool-cheat-sheet/
-//    https://github.com/intuit/karate/blob/master/karate-demo/src/test/java/demo/DemoTestParallel.java#L43
     private static void generateReport(String reportDir) {
         Collection<File> jsonFiles = FileUtils.listFiles(new File(reportDir), new String[] {"json"}, true);
         List<String> jsonPaths = jsonFiles.stream().map(file -> file.getAbsolutePath()).collect(Collectors.toList());

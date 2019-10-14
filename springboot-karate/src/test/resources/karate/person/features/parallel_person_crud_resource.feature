@@ -2,14 +2,21 @@
 @nonsequential
 Feature: Testing the Person REST API with Karate
 
+  # the background executes code before the scenarios are executed (of course there are some exceptions :) )
+  # this background :
+  # - defines the url to the resource using the base-url set in the karate-config.js, that might use environment
+  #   settings set on application / test startup
+  # - runs a setup feature to create the proper state for each scenario, like the DB state
+  # - defines a teardown / cleanup to be run after each scenario
   Background:
     # set the base url to be used for each scenario, if a scenario omits its local path only the base url will be used
     * url testBaseUrl + '/api/person'
-    # execute the before_each_person_scenario.feature before each scenario, the JUnit @Before equivalent
-    * def beforeScenarioFile = supportFolderPath + 'before_each_person_scenario.feature'
-    * call read(beforeScenarioFile)
-    * def afterScenarioFile = supportFolderPath + 'after_each_person_scenario.feature'
-    * configure afterFeature = function(){ karate.call(afterScenarioFile); }
+    # run a setup and teardown before and after the feature, we can't run it before and after each scenario because we
+    # will run the scenarios in parallel and the setup / teardown will interfere with executing scnarios!
+    * def beforeFeatureFile = supportFolderPath + 'before_each_person_scenario.feature'
+    * callonce read(beforeFeatureFile)
+    * def afterFeatureFile = supportFolderPath + 'after_each_person_scenario.feature'
+    * configure afterFeature = function(){ karate.call(afterFeatureFile); }
 
   Scenario: Should return all the persons
     When method GET

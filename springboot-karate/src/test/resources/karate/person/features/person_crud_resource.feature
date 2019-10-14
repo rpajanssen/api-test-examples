@@ -2,15 +2,25 @@
 @sequential
 Feature: Testing the Person REST API with Karate
 
+  # the background executes code before the scenarios are executed (of course there are some exceptions :) )
+  # this background :
+  # - defines the url to the resource using the base-url set in the karate-config.js, that might use environment
+  #   settings set on application / test startup
+  # - runs a setup feature to create the proper state for each scenario, like the DB state
+  # - defines a teardown / cleanup to be run after each scenario
   Background:
     # set the base url to be used for each scenario, if a scenario omits its local path only the base url will be used
     * url testBaseUrl + '/api/person'
-    # execute the before_each_person_scenario.feature before each scenario, the JUnit @Before equivalent
+    # the idea is to execute a setup and teardown before and after each scenario, and that will only work if you run the
+    # tests sequentially!
+    # execute the before_each_person_scenario.feature before each scenario, the JUnit @BeforeEach equivalent
     * def beforeScenarioFile = supportFolderPath + 'before_each_person_scenario.feature'
-    * call read(beforeScenarioFile)
-    # todo : comment
-    # see  : https://github.com/intuit/karate/issues/919
-    # execute the after_each_person_scenario.feature after each scenario, the JUnit @After equivalent
+    # since we can't get the after-scenario to work properly (tests are already started before the after scenario has finished)
+    # we don't execute a 'call' but a 'callonce', so it effectively becomes a @BeforeAll equivalent
+    #* call read(beforeScenarioFile)
+    * callonce read(beforeScenarioFile)
+    # execute the after_each_person_scenario.feature after each scenario, the JUnit @AfterEach equivalent
+    # ... but since scenarios are already started with the after-scenario still running we use the afterFeature instead!
     * def afterScenarioFile = supportFolderPath + 'after_each_person_scenario.feature'
     # * configure afterScenario = function(){ karate.call(afterScenarioFile); }
     * configure afterFeature = function(){ karate.call(afterScenarioFile); }
