@@ -1,5 +1,5 @@
-@parallel=false
-@sequential
+@parallel=true
+@nonsequential
 Feature: Testing the Person REST API with Karate
 
   Background:
@@ -8,11 +8,7 @@ Feature: Testing the Person REST API with Karate
     # execute the before_each_person_scenario.feature before each scenario, the JUnit @Before equivalent
     * def beforeScenarioFile = supportFolderPath + 'before_each_person_scenario.feature'
     * call read(beforeScenarioFile)
-    # todo : comment
-    # see  : https://github.com/intuit/karate/issues/919
-    # execute the after_each_person_scenario.feature after each scenario, the JUnit @After equivalent
     * def afterScenarioFile = supportFolderPath + 'after_each_person_scenario.feature'
-    # * configure afterScenario = function(){ karate.call(afterScenarioFile); }
     * configure afterFeature = function(){ karate.call(afterScenarioFile); }
 
   Scenario: Should return all the persons

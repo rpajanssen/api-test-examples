@@ -148,7 +148,7 @@
         </dependency-->
         <!-- END - karate requirements -->
 
-        <!-- todo -->
+        <!-- Integration of Karate with Cucumber reports -->
         <dependency>
             <groupId>net.masterthought</groupId>
             <artifactId>cucumber-reporting</artifactId>
