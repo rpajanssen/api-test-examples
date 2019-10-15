@@ -254,6 +254,63 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--
+                CDC: This plugin is responsible for generating and running the tests given the contracts.
+            -->
+            <plugin>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-contract-maven-plugin</artifactId>
+                <version>${spring-cloud-contract.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <testFramework>JUNIT5</testFramework>
+                    <!--
+                        CDC: Specify the test-method used by the generated test. Default is MOCKMVC. Other options are:
+                        WEBTESTCLIENT, JAXRSCLIENT, EXPLICIT. You can not have one set of test using mocking and another
+                        set of test using the web-test client since you can only specify this setting once for the whole
+                        project/module!
+
+                        In this project we do have mocked and wired generated test, while using the default MOCKMVC
+                        test-method. We implemented a base test class that wires the complete app and then passes the
+                        application context to springs RestAssuredMockMvc to make all the beans available to the mocked
+                        environment of the generated tests. Note that this NOT how you should be doing it!
+                    -->
+                    <testMode>MOCKMVC</testMode>
+
+                    <!--
+                        CDC: To bind the contracts to an abstract test-class that sets up the wiring we have three
+                        different options. The first one is the one we use in this example, and that is association
+                        by name conventions. With the packageWithBaseClasses-property we configure the base package
+                        were (all) our abstract test-classes can be found. The contracts are read from the
+                        "/resources/contracts" folder and the subfolder structure the contracts are in define the name
+                        of the abstract test-class to be used. As example we have a subfolder structure of "person/mocked"
+                        that holds our contracts, then the base class that will be used is PersonMockedBase.
+
+                        Note that normally you won't have a "mocked" or  "wired" folder, we have these just to be
+                        able to show you how you can have a mocked and/or wired test.
+                     -->
+                    <packageWithBaseClasses>com.example.examples.cloudcontracts</packageWithBaseClasses>
+
+                    <!--
+                        CDC: Option two. If you have a small application with just on rest-resource (or a limited amount of
+                        resources that all require the same base test class) then one base test class will suffice and
+                        we can use the baseClassForTests-property to configure it.
+                    -->
+                    <!-- baseClassForTests>com.example.examples.cloudcontracts.PersonMockedBase</baseClassForTests-->
+
+                    <!--
+                        CDC: The third option is to configure a base test class to be use per contract package using
+                        a regular expression defining the package. This option is used if you need multiple base
+                        test classes and want configuration over convention (option one).
+                     -->
+                    <!--baseClassMappings>
+                        <baseClassMapping>
+                            <contractPackageRegex>.*person.*</contractPackageRegex>
+                            <baseClassFQN>com.example.examples.cloudcontracts.PersonMockedBase</baseClassFQN>
+                        </baseClassMapping>
+                    </baseClassMappings-->
+                </configuration>
+            </plugin>
 		</plugins>
 	</build>
 </project>
