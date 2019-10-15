@@ -3,11 +3,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>com.abnamro.coesd</groupId>
-		<artifactId>master-pom</artifactId>
-		<version>3.0.0</version>
-	</parent>
+    <parent>
+        <groupId>com.example.examples</groupId>
+        <artifactId>rest-api-test-examples</artifactId>
+        <version>1.0.0</version>
+    </parent>
 
 	<!--parent>
 		<groupId>org.springframework.boot</groupId>
@@ -20,6 +20,7 @@
 	<artifactId>springboot-restassured</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<name>springboot-restassured</name>
+    <packaging>jar</packaging>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

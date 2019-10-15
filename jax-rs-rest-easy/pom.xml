@@ -5,13 +5,13 @@
 
     <groupId>com.abnamro.examples</groupId>
     <artifactId>jaxrs-resteasy</artifactId>
-    <packaging>jar</packaging>
-    <version>1.0.0</version>
+    <packaging>war</packaging>
+    <version>1.0.0-SNAPSHOT</version>
 
     <parent>
-        <groupId>com.abnamro.coesd</groupId>
-        <artifactId>master-pom</artifactId>
-        <version>3.0.0</version>
+        <groupId>com.example.examples</groupId>
+        <artifactId>rest-api-test-examples</artifactId>
+        <version>1.0.0</version>
     </parent>
 
     <properties>
@@ -29,6 +29,7 @@
         <version.resteasy>4.3.1.Final</version.resteasy>
         <version.weld-servlet>2.4.8.Final</version.weld-servlet>
 
+        <version.mvn.war.plugin>3.2.3</version.mvn.war.plugin>
         <version.mvn.compiler.plugin>3.8.1</version.mvn.compiler.plugin>
         <version.mvn.compiler.plugin.jdk>11</version.mvn.compiler.plugin.jdk>
         <version.mvn.build-helper.plugin>11</version.mvn.build-helper.plugin>
@@ -57,6 +58,14 @@
                         <include>**/*Test.java</include>
                         <include>**/*IT.java</include>
                     </includes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>${version.mvn.war.plugin}</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>
         </plugins>

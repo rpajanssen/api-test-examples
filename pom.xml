@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.abnamro.coesd</groupId>
+		<artifactId>master-pom</artifactId>
+		<version>3.0.0</version>
+	</parent>
+
+	<groupId>com.example.examples</groupId>
+	<artifactId>rest-api-test-examples</artifactId>
+	<version>1.0.0</version>
+	<name>REST API Test Examples</name>
+	<packaging>pom</packaging>
+
+    <modules>
+        <module>jax-rs-jersey-test</module>
+        <module>jax-rs-rest-easy</module>
+        <module>jax-rs-spring-cloud-contract</module>
+        <module>springboot-karate</module>
+        <module>springboot-restassured</module>
+        <module>springboot-springcloudcontract</module>
+    </modules>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>11</java.version>
+
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+	</properties>
+
+</project>
