@@ -84,11 +84,6 @@
                         WEBTESTCLIENT, JAXRSCLIENT, EXPLICIT. You can not have one set of test using mocking and another
                         set of test using the web-test client since you can only specify this setting once for the whole
                         project/module!
-
-                        In this project we do have mocked and wired generated test, while using the default MOCKMVC
-                        test-method. We implemented a base test class that wires the complete app and then passes the
-                        application context to springs RestAssuredMockMvc to make all the beans available to the mocked
-                        environment of the generated tests. Note that this NOT how you should be doing it!
                     -->
                     <testMode>JAXRSCLIENT</testMode>
 
