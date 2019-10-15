@@ -17,6 +17,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * CDC: (see the pom.xml for additional documentation) This is a base test class that will be extended by all generated
  * classes derived from the contracts in the "/resources/contracts/person/wired" folder.
@@ -51,6 +53,10 @@ public abstract class PersonWiredBase {
     @Autowired
     protected WebApplicationContext context;
 
+
+//    private ConnectionHolder connectionHolder = () ->
+//            EntityManagerProvider.instance("junit5-pu").clear().connection()
+
     @BeforeEach
     public void setup() {
         RestAssured.baseURI = BASE_URL;
@@ -59,10 +65,19 @@ public abstract class PersonWiredBase {
         // CDC : pass the application context to the mocked environment the generated tests will use (see documentation
         // above and in the pom.xml.
         RestAssuredMockMvc.webAppContextSetup(context);
+
+
+//        DataSetConfig dataSetConfig = new DataSetConfig("datasets/yml/users.yml");(1)
+//        executor.createDataSet(dataSetConfig);(2)
     }
 
     @AfterEach
     public void cleanup() {
         RestAssuredMockMvc.reset();
+    }
+
+    // todo : document
+    public void contains(String text, String value) {
+        assertThat(text).contains(value);
     }
 }

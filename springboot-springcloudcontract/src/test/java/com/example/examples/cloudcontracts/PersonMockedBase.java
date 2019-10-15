@@ -1,6 +1,8 @@
 package com.example.examples.cloudcontracts;
 
-import com.example.examples.dao.PersonDao;
+import com.example.examples.dao.PersonDAO;
+import com.example.examples.dao.exceptions.PersonAlreadyExistsException;
+import com.example.examples.dao.exceptions.PersonNotFoundException;
 import com.example.examples.domain.api.Person;
 import com.example.examples.rest.exceptionhandlers.PersonResourceExceptionHandler;
 import com.example.examples.rest.resources.PersonCrudResource;
@@ -16,7 +18,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 /**
@@ -33,7 +37,7 @@ import static org.mockito.Mockito.when;
 public abstract class PersonMockedBase {
 
     @MockBean
-    private PersonDao personDao;
+    private PersonDAO<Person> personDao;
 
     @Autowired
     private PersonCrudResource resource;
@@ -42,7 +46,7 @@ public abstract class PersonMockedBase {
     private PersonResourceExceptionHandler exceptionHandler;
 
     @BeforeEach
-    public void setup() {
+    public void setup() throws PersonAlreadyExistsException, PersonNotFoundException {
         // deploy the resource and global exception handler
         RestAssuredMockMvc.standaloneSetup(resource, exceptionHandler);
 
@@ -56,20 +60,24 @@ public abstract class PersonMockedBase {
      * with only the implementation of the defineMockingBehavior method defining the the behavior for just one
      * contract that will be used by spring-cloud-contract when generating the test classes.
      */
-    private void defineMockingBehavior() {
+    private void defineMockingBehavior() throws PersonAlreadyExistsException, PersonNotFoundException {
         // get all persons
         when(personDao.findAll()).thenReturn(Arrays.asList(testPersons()));
 
         // add a person
-        when(personDao.save(new Person(null, "Katy", "Perry"))).thenReturn(new Person(1001L, "Katy", "Perry"));
+        when(personDao.add(new Person(null, "Katy", "Perry"))).thenReturn(new Person(1001L, "Katy", "Perry"));
 
         // update a person
-        when(personDao.existsById(3L)).thenReturn(true);
-        Person target = new Person(3L, "Erik", "Erikson");
-        when(personDao.save(eq(target))).thenReturn(new Person(3L, "Erik", "Erikson"));
+        // ... nothing required
 
         // update a non existing person
         when(personDao.existsById(25L)).thenReturn(false);
+        Person toBeUpdated = new Person(25L, "Johnie", "Hacker");
+        doThrow(new PersonNotFoundException(toBeUpdated, "person does not exist")).when(personDao).update(eq(toBeUpdated));
+
+        // create already existing person
+        Person toBeCreated = new Person(1L, "Jan-Klaas", "Janssen");
+        when(personDao.add(eq(toBeCreated))).thenThrow(new PersonAlreadyExistsException(toBeCreated, "person already exists"));
     }
 
     private Person[] testPersons() {
@@ -84,5 +92,10 @@ public abstract class PersonMockedBase {
     public void cleanup() {
         RestAssuredMockMvc.reset();
         Mockito.reset(personDao);
+    }
+
+    // todo : document
+    public void contains(String text, String value) {
+        assertThat(text).contains(value);
     }
 }

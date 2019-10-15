@@ -1,4 +1,4 @@
-package contracts.person.mocked
+package contracts.person
 
 import org.springframework.cloud.contract.spec.Contract
 
