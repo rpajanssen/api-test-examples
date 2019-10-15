@@ -1,9 +1,11 @@
 package com.abnamro.examples.jaxrs.resources;
 
 import com.abnamro.examples.dao.exceptions.DataAccessException;
-import com.abnamro.examples.dao.exceptions.InvalidDataException;
+import com.abnamro.examples.dao.exceptions.PersonAlreadyExistsException;
+import com.abnamro.examples.dao.exceptions.PersonDoesNotExistException;
 import com.abnamro.examples.domain.api.Person;
 import com.abnamro.examples.domain.api.SafeList;
+import com.abnamro.examples.jaxrs.annotations.Status;
 import com.abnamro.examples.jaxrs.bindings.BlackListLastNames;
 import com.abnamro.examples.jaxrs.bindings.CompressData;
 
@@ -53,13 +55,19 @@ public interface PersonResource<T extends Person> {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Status(Response.Status.CREATED)
     @BlackListLastNames
-    T create(@Valid T person) throws DataAccessException, InvalidDataException;
+    T add(@Valid T person) throws DataAccessException, PersonDoesNotExistException, PersonAlreadyExistsException;
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    T update(@Valid T person) throws InvalidDataException, DataAccessException;
+    T update(@Valid T person) throws PersonDoesNotExistException, DataAccessException;
+
+    @DELETE
+    @Status(Response.Status.NO_CONTENT)
+    @Path("/{personId}")
+    void delete(@PathParam("personId") long personId) throws DataAccessException;
 
     /**
      * Implements failure scenarios for testing purposes that is the same for all person-resources.

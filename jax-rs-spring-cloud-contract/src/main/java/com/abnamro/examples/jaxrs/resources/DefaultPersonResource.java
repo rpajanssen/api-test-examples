@@ -4,7 +4,8 @@ package com.abnamro.examples.jaxrs.resources;
 import com.abnamro.examples.aspects.EnableTracing;
 import com.abnamro.examples.dao.PersonDAO;
 import com.abnamro.examples.dao.exceptions.DataAccessException;
-import com.abnamro.examples.dao.exceptions.InvalidDataException;
+import com.abnamro.examples.dao.exceptions.PersonAlreadyExistsException;
+import com.abnamro.examples.dao.exceptions.PersonDoesNotExistException;
 import com.abnamro.examples.domain.api.Person;
 import com.abnamro.examples.domain.api.SafeList;
 
@@ -70,7 +71,7 @@ public class DefaultPersonResource implements PersonResource<Person> {
      */
     @Override
     @EnableTracing
-    public Person create(Person person) throws DataAccessException, InvalidDataException {
+    public Person add(Person person) throws DataAccessException, PersonAlreadyExistsException {
         personDAO.add(person);
 
         return person;
@@ -81,7 +82,7 @@ public class DefaultPersonResource implements PersonResource<Person> {
      */
     @Override
     @EnableTracing
-    public Person update(Person person) throws InvalidDataException, DataAccessException {
+    public Person update(Person person) throws PersonDoesNotExistException, DataAccessException {
         // should be some persistence code here
 
         onSpecificTestInputThrowASpecificException(person);
@@ -89,5 +90,14 @@ public class DefaultPersonResource implements PersonResource<Person> {
         personDAO.update(person);
 
         return person;
+    }
+
+    /**
+     * Example resource that uses the tracer and is NOT bound to an interceptor that cleans up last names.
+     */
+    @Override
+    @EnableTracing
+    public void delete(long personId) throws DataAccessException {
+        personDAO.delete(personId);
     }
 }

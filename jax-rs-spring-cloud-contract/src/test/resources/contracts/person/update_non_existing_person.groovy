@@ -6,7 +6,7 @@ Contract.make {
     description "should not update a person that does not exist"
 
     request {
-        url "/api/person"
+        url "/person"
         method PUT()
         headers {
             contentType applicationJson()
@@ -24,12 +24,8 @@ Contract.make {
             contentType applicationJson()
         }
         body([
-                code: '0010',
-                data: [
-                        id: 25,
-                        firstName: 'Johnie',
-                        lastName: 'Hacker'
-                ]
+                code: 'NOT_FOUND',
+                message : $(producer(execute('contains($it, "person does not exist")')))
         ])
     }
 }
