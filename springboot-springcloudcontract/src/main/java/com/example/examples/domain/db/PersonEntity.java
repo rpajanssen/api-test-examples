@@ -5,7 +5,6 @@ import com.example.examples.domain.api.Person;
 import javax.persistence.*;
 import java.util.Objects;
 
-// todo : explain why this class exists next to Person API model
 /**
  * A table-generator is specified and used for the 'id' generation so we can control the initial value of the generated
  * id's. This way we have reserved the first 1000 entries for test data sets and programmatically added persons will

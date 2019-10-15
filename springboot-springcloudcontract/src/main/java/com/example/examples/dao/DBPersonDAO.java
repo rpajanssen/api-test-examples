@@ -68,6 +68,6 @@ public class DBPersonDAO implements PersonDAO<Person>{
 
     @Override
     public boolean existsById(Long id) {
-        return personRepository.existsById(id);
+        return id != null && personRepository.existsById(id);
     }
 }

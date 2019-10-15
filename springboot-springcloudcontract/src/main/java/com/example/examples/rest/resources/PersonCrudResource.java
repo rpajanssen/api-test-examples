@@ -51,7 +51,7 @@ public class PersonCrudResource {
     }
 
     @DeleteMapping(path="/{personId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletePerson(@PathVariable("personId") long personId) {
         personDao.delete(personId);
     }
