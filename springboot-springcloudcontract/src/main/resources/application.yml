@@ -1,0 +1,35 @@
+management:
+  endpoints:
+    web:
+      exposure:
+# todo
+#        include: ["api/person", "hystrix.stream", "health", "info", "metrics", "trace"]
+        include: "*"
+#        exclude: "*"
+#      base-path: "/"
+
+# todo : should be defined (or not) in the specific property files but then the karate test fails when run from IDE
+#        the instance then no longer has access to the sequence table (or it does not exist) - can't figure out why
+spring:
+  banner:
+    location: banner.txt
+  datasource:
+    driver-class-name: org.hsqldb.jdbc.JDBCDriver
+    type: org.hsqldb.jdbc.JDBCDataSource
+    url: jdbc:hsqldb:mem:testdb;DB_CLOSE_DELAY=-1
+    username:
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    generate-ddl: false
+    database-platform: org.hibernate.dialect.HSQLDialect
+    database: HSQL
+    show_sql: true
+    properties:
+      hibernate.cache.use_second_level_cache: false
+      hibernate.cache.use_query_cache: false
+      hibernate.generate_statistics: true
+
+
