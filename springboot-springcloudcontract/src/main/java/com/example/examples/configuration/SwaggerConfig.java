@@ -39,7 +39,7 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         return new ApiInfo(
                 "SpringBoot REST Examples",
-                "REST API's used to demo SpringBoot functionality and solutions..",
+                "REST API's used to demo SpringBoot functionality and solutions.",
                 "API 1",
                 "Terms of service",
                 new Contact("Tacky Nerd", "www.cleanest-code.com", "tacky.nerd@cleanest-code.com"),

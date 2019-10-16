@@ -18,7 +18,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -47,6 +46,9 @@ public abstract class PersonMockedBase {
 
     @BeforeEach
     public void setup() throws PersonAlreadyExistsException, PersonNotFoundException {
+        // Using the MOCK test mode Spring Cloud Contract will generate integration test that use a MockMvc and
+        // RestAssured. Our base class needs to setup this environment.
+
         // deploy the resource and global exception handler
         RestAssuredMockMvc.standaloneSetup(resource, exceptionHandler);
 
@@ -94,8 +96,13 @@ public abstract class PersonMockedBase {
         Mockito.reset(personDao);
     }
 
-    // todo : document
-    public void contains(String text, String value) {
-        assertThat(text).contains(value);
-    }
+//    /**
+//     * Since the developer on duty was to dumb to figure out how to get the right regular expression to work in the
+//     * Groovy contract, he wrote this method to perform the operation he wanted.
+//     *
+//     * Public methods in extended base test classes will be available for use in the Groovy contracts!
+//     */
+//    public void contains(String text, String value) {
+//        assertThat(text).contains(value);
+//    }
 }

@@ -12,6 +12,9 @@ import java.net.ServerSocket;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Captures some generic boilerplate to use a rest-server implementation in RestEasy based integration tests.
+ */
 public abstract class AbstractRestServer implements AutoCloseable {
     private String host = "localhost";
     private int port;

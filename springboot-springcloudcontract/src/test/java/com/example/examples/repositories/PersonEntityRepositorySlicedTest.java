@@ -45,7 +45,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         DirtiesContextTestExecutionListener.class,
 })
 @Transactional
-@ActiveProfiles(AvailableProfiles.LIVE)
+@ActiveProfiles(AvailableProfiles.LOCAL)
 class PersonEntityRepositorySlicedTest {
 
     @Autowired

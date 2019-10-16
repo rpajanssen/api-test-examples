@@ -13,6 +13,9 @@ import java.util.stream.Collectors;
 
 /**
  * Implementation of a person-finder that has no runtime dependencies and that we can control for test purposes.
+ *
+ * Note that this is NOT an implementation you would use in production :)... it is just here to support the
+ * demo!
  */
 @SuppressWarnings("unchecked")
 public class HardCodedPersonDAO implements PersonDAO<Person> {
@@ -80,7 +83,9 @@ public class HardCodedPersonDAO implements PersonDAO<Person> {
         return persons.stream().anyMatch(any -> any.getId() == person.getId());
     }
 
-    // todo : comment
+    /**
+     * We need to ability to reset the state of the data-set to the initial state for test purposes.
+     */
     public static void reset() {
         persons = initialContent.stream().map(Person::new).collect(Collectors.toList());
     }

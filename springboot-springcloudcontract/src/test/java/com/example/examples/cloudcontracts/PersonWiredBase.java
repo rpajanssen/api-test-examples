@@ -17,8 +17,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * CDC: (see the pom.xml for additional documentation) This is a base test class that will be extended by all generated
  * classes derived from the contracts in the "/resources/contracts/person/wired" folder.
@@ -28,8 +26,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * To pass on the wired environment to the context the tests will be executed in we need to pass the application context
  * to the mocked environment using RestAssuredMockMvc!
  *
- * Note that normally when having wired tests you do not have to do this! You need to change the test method in the pom
- * to a wired test method!
+ * Note that normally when ONLY having wired tests you do not have to do this! You need to change the test method in
+ * the pom to a wired test method!
  *
  * Note that we use DBRider to initialize the database. Since the tests are generated we cannot control the data-sets by
  * adding annotations to the test methods! We can only annotate this base class! We are limited to specify only these
@@ -41,7 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SuppressWarnings("unused")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = FantasticSpringbootApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(AvailableProfiles.LIVE)
+@ActiveProfiles(AvailableProfiles.LOCAL)
 @DBRider
 @DataSet(value = "persons.yml", cleanBefore = true, cleanAfter = true, strategy = SeedStrategy.CLEAN_INSERT)
 public abstract class PersonWiredBase {
@@ -53,31 +51,19 @@ public abstract class PersonWiredBase {
     @Autowired
     protected WebApplicationContext context;
 
-
-//    private ConnectionHolder connectionHolder = () ->
-//            EntityManagerProvider.instance("junit5-pu").clear().connection()
-
     @BeforeEach
     public void setup() {
+        // Using the MOCK test mode Spring Cloud Contract will generate integration test that use a MockMvc and
+        // RestAssured. Our base class needs to setup this environment.
+
         RestAssured.baseURI = BASE_URL;
         RestAssured.port = port;
 
-        // CDC : pass the application context to the mocked environment the generated tests will use (see documentation
-        // above and in the pom.xml.
         RestAssuredMockMvc.webAppContextSetup(context);
-
-
-//        DataSetConfig dataSetConfig = new DataSetConfig("datasets/yml/users.yml");(1)
-//        executor.createDataSet(dataSetConfig);(2)
     }
 
     @AfterEach
     public void cleanup() {
         RestAssuredMockMvc.reset();
-    }
-
-    // todo : document
-    public void contains(String text, String value) {
-        assertThat(text).contains(value);
     }
 }

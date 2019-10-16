@@ -11,9 +11,11 @@ between the consumer and provider about the format of data that they communicate
 Currently Spring Cloud Contract consists of the Spring Cloud Contract Verifier project and it gives us
 the following features:
 * ensure that HTTP / Messaging stubs (used when developing the client) are doing exactly what actual server-side implementation will do,
-* promote acceptance test driven development method and Microservices architectural style,
+* promote acceptance test driven development method and micro services architectural style,
 * provide a way to publish changes in contracts that are immediately visible on both sides of the communication,
 * generate _boilerplate_ test code used on the server side.
+
+_(taken from spring.io page)_
 
 This project will focus on the generation of the test code!
 
@@ -31,15 +33,53 @@ surefire reports.
 
 # How to add Spring Cloud Contract to your Spring Boot project?
 
-- add spring cloud contract and rest-easy dependencies in pom.xml
-- add and configure spring-cloud-contract-maven-plugin configuration to the pom.xml
-- add a base test class (or more when required) 
-- add the contracts
+Assume you already added the required Spring Boot dependencies and the JUnit5 dependencies to your pom.
+
+* Add spring cloud contract and rest-assured dependencies in pom.xml.
+* Configure appropriate springboot dependency management (__BE AWARE!__ The order of the dependencies is important!).
+  Since Spring Boot projects normally depend on a Spring Boot parent pom, that won't be possible if you
+  configure a different parent pom. You then have to add the Spring Boot BOM to the dependency management!
+* Add and configure spring-cloud-contract-maven-plugin configuration to the pom.xml
+  * Configure the unit test framework of choice (here we use Junit5).
+  * Configure the test mode. This is tricky! Normally when you write your own integration test, you may have
+    written multiple of these tests where some of these tests mock (part of) the application runtime environment,
+    while others are fully wired. Using Spring Cloud Contract... you have to pick one! We will choose the
+    mocked mode here __but__ we will demonstrate that choosing the mocked mode we can still generate and run a fully
+    wired integration test, allowing us to combine both types of tests to be generated within the same project!
+  * Configure the location of your base test class(es).
+  * Configure how the generated classes will be bound to a base test class! (See documentation in the pom.xml).  
+* Add a base test class (or more when required). The generated integration tests will extend a base class. 
+  Which one will be selected for a test is determined by the configuration of the plugin in the pom.xml. 
+  The base test classes will setup the runtime environment for your unit test. So they determine which runner to
+  use, start the application, wire the components, mock the components, prepare initial state (like DB content), etc.
+  Mocking is the tricky part! If you have one base test class for all your contracts and you have chosen to mock,
+  then you need to define all the mocking behavior upfront for all the scenarios/contracts! You have to
+  code careful to make sure what mocking belongs to which contract and you have to make sure they do not
+  clash/interfere with each other! The other option is to have a separate base test class for each contract! 
+  Best approach choosing that solution might be to have a high level abstract test class that defines the generic 
+  mocked environment and application setup, which will be extended by the abstract base test class that you
+  implement for the different scenarios that only have the scenario specific mocking setup.
+* Add the contracts. You can write them in YML or Groovy. With Groovy you have a lot more options. We
+  selected Groovy in this example project. Check out the Spring documentation for all the options, there
+  are many!
+
+You are good to go! Rune the maven test command and check the build directory (target) for a folder _generated-test-resources_.
+In that folder you will find the generated integration tests and in the surefire-reports folder you
+will find the test reports, they will have been run by the maven test command.
+
+If a test failed, you can run them from your IDE (maybe you need to tell your IDE that these are 
+test-sources first). So you can debug and trace like with any normal hand written integration test!
+
+I advice against copying these files in the the _src/test_ folder. They will be generated each time and the
+big benefit is that if the behavior of your REST API changes, you document this in your contracts and you 
+do __NOT__ have to refactor any test! 
 
 # Pros
 
+* your customers/clients can help define the behavior of your service
 * automatic __generation__ of REST API tests
-* automatic stub generation (wiremock)
+* automatic stub generation (Wiremock)
+* no more refactoring required of your integration tests when REST API changes
 * a stub runner for mocking dependencies (using the generated stubs of other services)
 * support for messaging APIs as well
 * powerful coding options in contract files (regular expressions, matchers, call java code, ...)
@@ -50,14 +90,12 @@ surefire reports.
 describe for all generated tests up front in the base test classes
 * different REST API behavior (like compressing the returned result) for different APIs require 
 different base test class implementations (see jax-rs-spring-cloud-contract equivalent example project)
-* only one mode supported per project (maven plugin configuration)
-* jvm based
-* maven / gradle dependency
-* a buy-in into Spring
+* only one test mode supported per project (maven plugin configuration)
 * compatibility issues with rest-assured
 * versioning issues with dependencies in the Spring BOM
+* a buy-in into Spring
 
-# Links
+# Useful links
 
 * https://martinfowler.com/articles/consumerDrivenContracts.html
 * https://spring.io/projects/spring-cloud-contract

@@ -12,8 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import javax.ws.rs.client.WebTarget;
 import java.io.IOException;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * CDC: (see the pom.xml for additional documentation) This is a base test class that will be extended by all generated
  * classes derived from the contracts in the "/resources/contracts/person/wired" folder.
@@ -27,7 +25,8 @@ public abstract class PersonOptimizedBase {
     private InMemoryCdiRestServer server;
     private RestClient restClient;
 
-    // todo document : https://cloud.spring.io/spring-cloud-contract/reference/html/project-features.html#features-jax-rs
+    // Using the JAX-RS test mode Spring Cloud Contract will generate integration test that use a WebTarget. Our
+    // base class need to provide an instance.
     protected WebTarget webTarget;
 
     /**
@@ -41,10 +40,11 @@ public abstract class PersonOptimizedBase {
         server = InMemoryCdiRestServer.instance(MyApplication.class);
         restClient = new RestClient(server.getHost(), server.getPort());
 
-        // todo : comment
+        // this base class will be used by contracts on resources that will compress the returned result so we need
+        // to add decompress functionality to this web-target instance
         webTarget = restClient.target().register(GZIPReaderInterceptor.class);
 
-        // todo : comment
+        // make sure each test starts with the initial DB state
         HardCodedPersonDAO.reset();
     }
 
@@ -61,11 +61,5 @@ public abstract class PersonOptimizedBase {
         server.close();
 
         InMemoryLogger.reset();
-    }
-
-
-    // todo : document - used in contracts because I was to dumb to get the regex working
-    public void contains(String text, String value) {
-        assertThat(text).contains(value);
     }
 }

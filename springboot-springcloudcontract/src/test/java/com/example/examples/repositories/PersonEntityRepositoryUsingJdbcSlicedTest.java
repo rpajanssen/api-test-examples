@@ -44,7 +44,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class,
 })
-@ActiveProfiles(AvailableProfiles.LIVE)
+@ActiveProfiles(AvailableProfiles.LOCAL)
 class PersonEntityRepositoryUsingJdbcSlicedTest {
     private static final String QUERY_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS PERSONS (ID BIGINT NOT NULL, FIRST_NAME VARCHAR(25) NOT NULL, LAST_NAME VARCHAR(50) NOT NULL)";
     private static final String QUERY_INSERT = "INSERT INTO PERSONS VALUES (%d, '%s', '%s')";

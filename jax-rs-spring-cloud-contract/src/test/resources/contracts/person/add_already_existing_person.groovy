@@ -18,6 +18,8 @@ Contract.make {
         )
     }
 
+    // note that we call the contains-method implemented in the base test class - we were unable (to dumb) to get the
+    // regex to work properly
     response {
         status BAD_REQUEST()
         headers {

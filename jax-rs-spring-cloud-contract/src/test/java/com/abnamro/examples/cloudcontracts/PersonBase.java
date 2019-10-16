@@ -26,7 +26,8 @@ public abstract class PersonBase {
     private InMemoryCdiRestServer server;
     private RestClient restClient;
 
-    // todo document : https://cloud.spring.io/spring-cloud-contract/reference/html/project-features.html#features-jax-rs
+    // Using the JAX-RS test mode Spring Cloud Contract will generate integration test that use a WebTarget. Our
+    // base class need to provide an instance.
     protected WebTarget webTarget;
 
     /**
@@ -42,7 +43,7 @@ public abstract class PersonBase {
 
         webTarget = restClient.target();
 
-        // todo : comment
+        // make sure each test starts with the initial DB state
         HardCodedPersonDAO.reset();
     }
 
@@ -62,7 +63,12 @@ public abstract class PersonBase {
     }
 
 
-    // todo : document - used in contracts because I was to dumb to get the regex working
+    /**
+     * Since the developer on duty was to dumb to get the required regex working in the Groovy contract, he took the
+     * easy way out and implemented a method in this base class that will be called from the contract instead.
+     *
+     * Any public method in this base class can be called from the Groovy contracts!
+     */
     public void contains(String text, String value) {
         assertThat(text).contains(value);
     }

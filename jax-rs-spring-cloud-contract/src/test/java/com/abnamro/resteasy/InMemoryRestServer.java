@@ -7,7 +7,9 @@ import org.jboss.resteasy.spi.ResteasyDeployment;
 
 import java.io.IOException;
 
-// todo : document
+/**
+ * Implementation of a RestEasy supported REST server for integration tests that will NOT support CDI features.
+ */
 public class InMemoryRestServer extends AbstractRestServer implements AutoCloseable {
     private InMemoryRestServer(Object... objects) {
         append(objects);

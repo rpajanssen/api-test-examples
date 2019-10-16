@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Demo JAX-RS application that registers just one resource.
+ * Demo JAX-RS application.
  *
  * To make CDI work (with RestEasy) we also added an empty beans.xml.
  */

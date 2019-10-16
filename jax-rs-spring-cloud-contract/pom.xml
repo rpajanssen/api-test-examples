@@ -125,14 +125,7 @@
 
     <dependencyManagement>
         <dependencies>
-            <!--<dependency>-->
-                <!--&lt;!&ndash; Import dependency management from Spring Boot &ndash;&gt;-->
-                <!--<groupId>org.springframework.boot</groupId>-->
-                <!--<artifactId>spring-boot-dependencies</artifactId>-->
-                <!--<version>${spring-boot.version}</version>-->
-                <!--<type>pom</type>-->
-                <!--<scope>import</scope>-->
-            <!--</dependency>-->
+            <!-- START dependency management for Spring Cloud -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-contract-dependencies</artifactId>
@@ -140,13 +133,14 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <!--<dependency>-->
-                <!--<groupId>org.springframework.cloud</groupId>-->
-                <!--<artifactId>spring-cloud-dependencies</artifactId>-->
-                <!--<version>${spring-cloud.version}</version>-->
-                <!--<type>pom</type>-->
-                <!--<scope>import</scope>-->
-            <!--</dependency>-->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- END dependency management for Spring Cloud -->
         </dependencies>
     </dependencyManagement>
 
@@ -183,13 +177,7 @@
             <artifactId>javax.el</artifactId>
             <version>3.0.0</version>
         </dependency>
-        <!-- todo : required ? -->
-        <!--<dependency>-->
-        <!--<groupId>javax.enterprise</groupId>-->
-        <!--<artifactId>cdi-api</artifactId>-->
-        <!--<version>2.0</version>-->
-        <!--<scope>provided</scope>-->
-        <!--</dependency>-->
+
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

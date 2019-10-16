@@ -27,7 +27,7 @@ public class DBPersonDAO implements PersonDAO<Person>{
                 .collect(Collectors.toList());
     }
 
-    // todo : cleanup : do not return null!
+    // todo : cleanup - never return null!
     @Override
     public Person findById(long id) {
         Optional<PersonEntity> optionalPersonEntity = personRepository.findById(id);
