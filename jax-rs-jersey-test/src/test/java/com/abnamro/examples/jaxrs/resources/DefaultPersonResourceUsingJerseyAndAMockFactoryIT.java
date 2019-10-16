@@ -1,20 +1,16 @@
 package com.abnamro.examples.jaxrs.resources;
 
 import com.abnamro.examples.dao.PersonDAO;
-import com.abnamro.examples.dao.PersonFinderMocker;
-import com.abnamro.examples.dao.exceptions.DataAccessException;
+import com.abnamro.examples.dao.PersonDAOMocker;
 import com.abnamro.examples.domain.api.Person;
-import com.abnamro.examples.jaxrs.exceptionhandling.ConstraintViolationHandler;
-import com.abnamro.examples.jaxrs.exceptionhandling.DefaultExceptionHandler;
-import com.abnamro.examples.jaxrs.exceptionhandling.InvalidDataExceptionHandler;
-import com.abnamro.examples.jaxrs.exceptionhandling.ValidationExceptionHandler;
+import com.abnamro.examples.jaxrs.exceptionhandling.*;
 import com.abnamro.examples.jaxrs.filters.AddCustomHeaderResponseFilter;
 import com.abnamro.examples.jaxrs.filters.RestrictRequestSizeRequestFilter;
+import com.abnamro.examples.jaxrs.filters.StatusFilter;
 import com.abnamro.examples.jaxrs.interceptors.GZIPWriterInterceptor;
 import com.abnamro.examples.jaxrs.interceptors.RemoveBlacklistedLastNameRequestInterceptor;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.mockito.Mockito;
 
 import javax.ws.rs.core.GenericType;
 import java.util.function.Supplier;
@@ -41,8 +37,10 @@ public class DefaultPersonResourceUsingJerseyAndAMockFactoryIT extends AbstractP
     protected ResourceConfig registerServerDependencies(ResourceConfig resourceConfig) {
         resourceConfig.register(RestrictRequestSizeRequestFilter.class);
         resourceConfig.register(AddCustomHeaderResponseFilter.class);
+        resourceConfig.register(StatusFilter.class);
 
-        resourceConfig.register(InvalidDataExceptionHandler.class);
+        resourceConfig.register(PersonAlreadyExistsExceptionHandler.class);
+        resourceConfig.register(PersonDoesNotExistExceptionHandler.class);
         resourceConfig.register(ConstraintViolationHandler.class);
         resourceConfig.register(ValidationExceptionHandler.class);
         resourceConfig.register(DefaultExceptionHandler.class);
@@ -66,14 +64,7 @@ public class DefaultPersonResourceUsingJerseyAndAMockFactoryIT extends AbstractP
     static class MockPersonFinderFactory implements Supplier<PersonDAO<Person>> {
         @Override
         public PersonDAO<Person> get() {
-            final PersonDAO<Person> personDAO = (PersonDAO<Person>)Mockito.mock(PersonDAO.class);
-            try {
-                PersonFinderMocker.mockPersonFinder(personDAO, Person.class.getConstructor(Long.TYPE, String.class, String.class));
-            } catch (DataAccessException | NoSuchMethodException e) {
-                throw new IllegalStateException(e.getMessage(), e);
-            }
-
-            return personDAO;
+            return PersonDAOMocker.mockPersonDAO();
         }
     }
 }

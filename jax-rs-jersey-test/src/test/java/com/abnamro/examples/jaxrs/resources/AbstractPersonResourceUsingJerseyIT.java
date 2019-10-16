@@ -101,12 +101,30 @@ public abstract class AbstractPersonResourceUsingJerseyIT<T extends Person> exte
     }
 
     @Test
-    public void shouldPersistPerson() {
+    public void shouldAddPerson() {
         Entity<Person> entity = Entity.json(new Person(5L, "Despicable", "Me"));
-        Person result = target("person").request().post(entity, new GenericType<Person>(){});
+        Person result = target("person").request().post(entity, Person.class);
 
         assertEquals("Despicable", result.getFirstName());
         assertEquals("Me", result.getLastName());
+    }
+
+    @Test
+    public void shouldUpdateAPerson() {
+        Entity<Person> entity = Entity.json(new Person(1L, "Jan-Klaas", "Janssen"));
+        Person result = target("person").request().put(entity, Person.class);
+
+        // verify response of the resource under test
+        assertEquals("Jan-Klaas", result.getFirstName());
+        assertEquals("Janssen", result.getLastName());
+    }
+
+    @Test
+    public void shouldDeleteAPerson() {
+        Response response = target("person/3").request().delete();
+
+        // verify response of the resource under test
+        assertEquals(Response.Status.NO_CONTENT.getStatusCode(), response.getStatus());
     }
 
     @Test
@@ -126,7 +144,7 @@ public abstract class AbstractPersonResourceUsingJerseyIT<T extends Person> exte
     }
 
     @Test
-    public void shouldReturnCustomHeaderForPost() {
+    public void shouldReturnCustomHeaderEvenOnBadRequest() {
         Entity<Person> entity = Entity.json(new Person(5L, "Despicable", StringUtils.repeat("Ooops", 250)));
         Response result = target("person").request().post(entity);
 
@@ -135,11 +153,15 @@ public abstract class AbstractPersonResourceUsingJerseyIT<T extends Person> exte
     }
 
     @Test
-    public void shouldReturnCustomHeaderEvenOnBadRequest() {
+    public void shouldReturnCustomHeaderForPost() {
         Entity<Person> entity = Entity.json(new Person(5L, "Despicable", "Me"));
         Response result = target("person").request().post(entity);
 
+        // NOTE : WARNING - with the current setup the StatusFilter does not work because the @Status annotation is not
+        // found on the resource method, there fore the incorrect status is returned!
+        //assertEquals(Response.Status.CREATED.getStatusCode(), result.getStatus());
         assertEquals(Response.Status.OK.getStatusCode(), result.getStatus());
+
         assertEquals(AddCustomHeaderResponseFilter.CUSTOM_HEADER_VALUE, result.getHeaders().get(AddCustomHeaderResponseFilter.CUSTOM_HEADER).get(0));
     }
 

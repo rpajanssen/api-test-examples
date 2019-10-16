@@ -1,16 +1,18 @@
 package com.abnamro.examples.jaxrs.resources;
 
 import com.abnamro.examples.dao.PersonDAO;
-import com.abnamro.examples.dao.PersonFinderMocker;
-import com.abnamro.examples.dao.exceptions.DataAccessException;
+import com.abnamro.examples.dao.PersonDAOMocker;
+import com.abnamro.examples.dao.exceptions.PersonAlreadyExistsException;
 import com.abnamro.examples.domain.api.ErrorResponse;
 import com.abnamro.examples.domain.api.Person;
 import com.abnamro.examples.domain.api.SafeList;
 import com.abnamro.examples.jaxrs.exceptionhandling.ConstraintViolationHandler;
 import com.abnamro.examples.jaxrs.exceptionhandling.DefaultExceptionHandler;
+import com.abnamro.examples.jaxrs.exceptionhandling.PersonDoesNotExistExceptionHandler;
 import com.abnamro.examples.jaxrs.exceptionhandling.ValidationExceptionHandler;
 import com.abnamro.examples.jaxrs.filters.AddCustomHeaderResponseFilter;
 import com.abnamro.examples.jaxrs.filters.RestrictRequestSizeRequestFilter;
+import com.abnamro.examples.jaxrs.filters.StatusFilter;
 import com.abnamro.examples.jaxrs.interceptors.GZIPReaderInterceptor;
 import com.abnamro.examples.jaxrs.interceptors.GZIPWriterInterceptor;
 import com.abnamro.examples.jaxrs.interceptors.RemoveBlacklistedLastNameRequestInterceptor;
@@ -21,7 +23,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -48,8 +49,7 @@ class DefaultPersonResourceUsingRestEasyAndASimpleMockIT {
     private InMemoryRestServer server;
     private RestClient restClient;
 
-    @Mock
-    private PersonDAO<Person> personDAO;
+    private PersonDAO<Person> personDAO = PersonDAOMocker.mockPersonDAO();
 
     /**
      * The before-each is preferred to the before-all because this way we can reset the state in between tests and we
@@ -58,12 +58,11 @@ class DefaultPersonResourceUsingRestEasyAndASimpleMockIT {
      * because we will re-instantiate and rewire the resource under test for each unit test.
      */
     @BeforeEach
-    void setup() throws DataAccessException, NoSuchMethodException, IOException {
+    void setup() throws IOException {
         /*
          * We will construct the resource we want to test ourselves and use the constructor also used for
          * constructor injection to inject the mocked DAO.
          */
-        PersonFinderMocker.mockPersonFinder(personDAO, Person.class.getConstructor(Long.TYPE, String.class, String.class));
         DefaultPersonResource underTest = new DefaultPersonResource(personDAO);
 
         /*
@@ -73,9 +72,10 @@ class DefaultPersonResourceUsingRestEasyAndASimpleMockIT {
          */
         Object[] theWholeShebang = {
                 underTest,
+                PersonAlreadyExistsException.class, PersonDoesNotExistExceptionHandler.class,
                 ConstraintViolationHandler.class, ValidationExceptionHandler.class, DefaultExceptionHandler.class,
                 RemoveBlacklistedLastNameRequestInterceptor.class,
-                RestrictRequestSizeRequestFilter.class, AddCustomHeaderResponseFilter.class,
+                RestrictRequestSizeRequestFilter.class, AddCustomHeaderResponseFilter.class, StatusFilter.class,
                 GZIPWriterInterceptor.class
         };
 
@@ -137,11 +137,44 @@ class DefaultPersonResourceUsingRestEasyAndASimpleMockIT {
     }
 
     @Test
+    void shouldAddAPerson() {
+        Entity<Person> entity = Entity.json(new Person(5L, "Despicable", "Me"));
+        Response response = restClient.newRequest("/person").request().buildPost(entity).invoke();
+
+        // verify response of the resource under test
+        assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
+        final Person result = response.readEntity(Person.class);
+        assertEquals(5L, result.getId());
+        assertEquals("Despicable", result.getFirstName());
+        assertEquals("Me", result.getLastName());
+    }
+
+    @Test
+    void shouldUpdateAPerson() {
+        Entity<Person> entity = Entity.json(new Person(1L, "Jan-Klaas", "Janssen"));
+        Response response = restClient.newRequest("/person").request().buildPut(entity).invoke();
+
+        // verify response of the resource under test
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        final Person result = response.readEntity(Person.class);
+        assertEquals("Jan-Klaas", result.getFirstName());
+        assertEquals("Janssen", result.getLastName());
+    }
+
+    @Test
+    void shouldDeleteAPerson() {
+        Response response = restClient.newRequest("/person/3").request().buildDelete().invoke();
+
+        // verify response of the resource under test
+        assertEquals(Response.Status.NO_CONTENT.getStatusCode(), response.getStatus());
+    }
+
+    @Test
     void shouldTriggerInterceptorToReplaceUnacceptableLastName() {
         Entity<Person> entity = Entity.json(new Person(5L, "John", "Asshole"));
         Response response = restClient.newRequest("/person").request().buildPost(entity).invoke();
 
-        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
 
         final Person result = response.readEntity(Person.class);
         assertEquals("John", result.getFirstName());
@@ -232,19 +265,19 @@ class DefaultPersonResourceUsingRestEasyAndASimpleMockIT {
 
     @Test
     void shouldReturnCustomHeaderForPost() {
-        Entity<Person> entity = Entity.json(new Person(5L, "Despicable", StringUtils.repeat("Ooops", 250)));
+        Entity<Person> entity = Entity.json(new Person(5L, "Despicable", "Me"));
         Response result = restClient.newRequest("/person").request().buildPost(entity).invoke();
 
-        assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), result.getStatus());
+        assertEquals(Response.Status.CREATED.getStatusCode(), result.getStatus());
         assertEquals(AddCustomHeaderResponseFilter.CUSTOM_HEADER_VALUE, result.getHeaders().get(AddCustomHeaderResponseFilter.CUSTOM_HEADER).get(0));
     }
 
     @Test
     void shouldReturnCustomHeaderEvenOnBadRequest() {
-        Entity<Person> entity = Entity.json(new Person(5L, "Despicable", "Me"));
+        Entity<Person> entity = Entity.json(new Person(5L, "Despicable", StringUtils.repeat("Ooops", 250)));
         Response result = restClient.newRequest("/person").request().buildPost(entity).invoke();
 
-        assertEquals(Response.Status.OK.getStatusCode(), result.getStatus());
+        assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), result.getStatus());
         assertEquals(AddCustomHeaderResponseFilter.CUSTOM_HEADER_VALUE, result.getHeaders().get(AddCustomHeaderResponseFilter.CUSTOM_HEADER).get(0));
     }
 }

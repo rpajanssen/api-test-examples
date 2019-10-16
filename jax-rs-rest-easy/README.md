@@ -2,46 +2,61 @@
 
 This example project will help you write integration tests for JAX-RS REST resources using RestEasy
 
-# Unit Test Examples
-
-This project will demonstrate some unit test examples. All names of products used in this intro are explained later in this document.
-It will demonstrate wired unit tests for JAX-RS classes using RestEasy and using [Mockito](#Mockito) for CDI dependencies in the resources.
-It will demonstrate wired unit tests for JAX-RS classes using RestEasy and using [RestEasy](#RestEasy) plugins to wire CDI dependencies in the resources
-and activate other CDI classes like CDI method interceptors.
-
-# Junit
-
-As java unit test framework we will use [Junit](https://junit.org/).
-
-We have examples of JUnit5 and will *NOT* demonstrate anything from Junit4.
-
-<a name="Mockito"></a>
-# Mockito
-
-As mocking framework we will use [Mockito 2](https://site.mockito.org).
-
-<a name="RestEasy"></a>
-# RestEasy
-
-One option to test JAX-RS resources is to use RestEasy. 
-
-Like with JerseyTest with RestEasy the unit test will create an in-memory http-server and from your unit test
+Like with JerseyTest with [RestEasy](https://resteasy.github.io/) the unit test will create an in-memory http-server and from your unit test
 you deploy the resource(s) you want to test on that server. Then the unit tests will be executed and those
 unit test will actually call your REST API in your resource. These test run pretty fast so most of you won't
 mind running them as a unit instead of integration test.
 
-# Execute unit tests
+# Requirements
 
-The execution of the unit tests is done through maven:
+* maven 3.6.1 (or higher)
+* java 11
 
-```mvn clean test```
+# Tl;DR
 
+I just wanna run it: `mvn clean test`
 
+# How to add RestEasy to your JAX-RS application?
 
-# pros
+Assuming you have all dependencies for your JAX-RS application in place and of course you have
+your Junit5 dependencies for your unit tests in your pom.xml.
 
+* Add the required RestEasy dependencies to your pom.xml:
+  * servlet implementation
+  * http server
+  * dependency injection engine
+  * (de)serialization
+  * bean validation 
+* Implement your test class:
+  * setup a rest server (configure the resources and dependencies under test)
+  * setup a rest client
+  * implement your tests using using the rest client
 
+We implemented some basic test examples with a _simple_ setup, to show you a mocked example and
+a wired example. 
 
-# cons
+And we abstracted away some boilerplate setup code and used that approach with similar mocked 
+and wired examples.
 
-- bean validation does NOT throw javax.validation.ValidationException so this will not be picked up by our handler
+Note also how we handled the integration test for the one resource that compresses the returned result.
+
+# Pros
+
+* fast execution
+* simple to program and apply
+* CDI support (not like JerseyTest)
+* Support for JUnit5
+* Reactive Support
+* EJB, Seam, Guice, Spring, Spring MVC and Spring Boot integration
+
+# Cons
+
+* bean validation does NOT throw javax.validation.ValidationException so this will not be 
+  picked up our custom handler handler but by some default handler
+* not a production like application container
+
+# Useful links
+
+https://resteasy.github.io/
+https://www.baeldung.com/integration-testing-a-rest-api
+

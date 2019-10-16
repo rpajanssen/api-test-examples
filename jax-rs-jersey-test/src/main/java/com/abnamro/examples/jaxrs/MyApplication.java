@@ -4,12 +4,10 @@ import com.abnamro.examples.aspects.Logger;
 import com.abnamro.examples.dao.HardCodedPersonDAO;
 import com.abnamro.examples.dao.PersonDAO;
 import com.abnamro.examples.domain.api.Person;
-import com.abnamro.examples.jaxrs.exceptionhandling.ConstraintViolationHandler;
-import com.abnamro.examples.jaxrs.exceptionhandling.DefaultExceptionHandler;
-import com.abnamro.examples.jaxrs.exceptionhandling.InvalidDataExceptionHandler;
-import com.abnamro.examples.jaxrs.exceptionhandling.ValidationExceptionHandler;
+import com.abnamro.examples.jaxrs.exceptionhandling.*;
 import com.abnamro.examples.jaxrs.filters.AddCustomHeaderResponseFilter;
 import com.abnamro.examples.jaxrs.filters.RestrictRequestSizeRequestFilter;
+import com.abnamro.examples.jaxrs.filters.StatusFilter;
 import com.abnamro.examples.jaxrs.interceptors.GZIPWriterInterceptor;
 import com.abnamro.examples.jaxrs.interceptors.RemoveBlacklistedLastNameRequestInterceptor;
 import com.abnamro.examples.jaxrs.resources.DefaultPersonResource;
@@ -34,7 +32,8 @@ public class MyApplication extends Application {
         Set<Class<?>> classes = new HashSet<>();
         classes.add(DefaultPersonResource.class);
 
-        classes.add(InvalidDataExceptionHandler.class);
+        classes.add(PersonAlreadyExistsExceptionHandler.class);
+        classes.add(PersonDoesNotExistExceptionHandler.class);
         classes.add(ConstraintViolationHandler.class);
         classes.add(ValidationExceptionHandler.class);
         classes.add(DefaultExceptionHandler.class);
@@ -43,6 +42,7 @@ public class MyApplication extends Application {
 
         classes.add(RestrictRequestSizeRequestFilter.class);
         classes.add(AddCustomHeaderResponseFilter.class);
+        classes.add(StatusFilter.class);
 
         classes.add(GZIPWriterInterceptor.class);
 

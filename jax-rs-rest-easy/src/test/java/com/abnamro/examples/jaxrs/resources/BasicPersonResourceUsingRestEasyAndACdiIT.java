@@ -114,20 +114,53 @@ public class BasicPersonResourceUsingRestEasyAndACdiIT {
     }
 
     @Test
+    void shouldAddAPerson() {
+        Entity<Person> entity = Entity.json(new Person(1001L, "Wim", "Willemsen"));
+        Response response = restClient.newRequest("/person").request().buildPost(entity).invoke();
+
+        // verify response of the resource under test
+        assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
+        final Person result = response.readEntity(Person.class);
+        assertEquals(1001L, result.getId());
+        assertEquals("Wim", result.getFirstName());
+        assertEquals("Willemsen", result.getLastName());
+    }
+
+    @Test
+    void shouldUpdateAPerson() {
+        Entity<Person> entity = Entity.json(new Person(1L, "Jan-Klaas", "Janssen"));
+        Response response = restClient.newRequest("/person").request().buildPut(entity).invoke();
+
+        // verify response of the resource under test
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        final Person result = response.readEntity(Person.class);
+        assertEquals("Jan-Klaas", result.getFirstName());
+        assertEquals("Janssen", result.getLastName());
+    }
+
+    @Test
+    void shouldDeleteAPerson() {
+        Response response = restClient.newRequest("/person/3").request().buildDelete().invoke();
+
+        // verify response of the resource under test
+        assertEquals(Response.Status.NO_CONTENT.getStatusCode(), response.getStatus());
+    }
+
+    @Test
     void shouldTriggerInterceptorToReplaceUnacceptableLastName() {
         Entity<Person> entity = Entity.json(new Person(5L, "John", "Asshole"));
         Response response = restClient.newRequest("/person").request().buildPost(entity).invoke();
 
         // verify response of the resource under test
-        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
         final Person result = response.readEntity(Person.class);
         assertEquals("John", result.getFirstName());
         assertEquals("A***e", result.getLastName());
 
         // verify the CDI method interceptor call
         assertEquals(2, InMemoryLogger.getLogStatements().size());
-        assertEquals("com.abnamro.examples.jaxrs.resources.DefaultPersonResource entering create", InMemoryLogger.getLogStatements().get(0));
-        assertEquals("com.abnamro.examples.jaxrs.resources.DefaultPersonResource exiting create", InMemoryLogger.getLogStatements().get(1));
+        assertEquals("com.abnamro.examples.jaxrs.resources.DefaultPersonResource entering add", InMemoryLogger.getLogStatements().get(0));
+        assertEquals("com.abnamro.examples.jaxrs.resources.DefaultPersonResource exiting add", InMemoryLogger.getLogStatements().get(1));
     }
 
     @Test
@@ -233,21 +266,21 @@ public class BasicPersonResourceUsingRestEasyAndACdiIT {
 
     @Test
     void shouldReturnCustomHeaderForPost() {
-        Entity<Person> entity = Entity.json(new Person(5L, "Despicable", StringUtils.repeat("Ooops", 250)));
+        Entity<Person> entity = Entity.json(new Person(5L, "Despicable", "Me"));
         Response result = restClient.newRequest("/person").request().buildPost(entity).invoke();
 
         // verify response of the resource under test
-        assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), result.getStatus());
+        assertEquals(Response.Status.CREATED.getStatusCode(), result.getStatus());
         assertEquals(AddCustomHeaderResponseFilter.CUSTOM_HEADER_VALUE, result.getHeaders().get(AddCustomHeaderResponseFilter.CUSTOM_HEADER).get(0));
     }
 
     @Test
     void shouldReturnCustomHeaderEvenOnBadRequest() {
-        Entity<Person> entity = Entity.json(new Person(5L, "Despicable", "Me"));
+        Entity<Person> entity = Entity.json(new Person(5L, "Despicable", StringUtils.repeat("Ooops", 250)));
         Response result = restClient.newRequest("/person").request().buildPost(entity).invoke();
 
         // verify response of the resource under test
-        assertEquals(Response.Status.OK.getStatusCode(), result.getStatus());
+        assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), result.getStatus());
         assertEquals(AddCustomHeaderResponseFilter.CUSTOM_HEADER_VALUE, result.getHeaders().get(AddCustomHeaderResponseFilter.CUSTOM_HEADER).get(0));
     }
 }

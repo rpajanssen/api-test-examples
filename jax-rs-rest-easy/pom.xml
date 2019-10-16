@@ -18,7 +18,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.java>11</version.java>
 
-        <version.jackson>2.9.8</version.jackson>
+        <version.jackson>2.10.0</version.jackson>
         <version.commons-lang3>3.9</version.commons-lang3>
 
         <version.mockito>2.23.4</version.mockito>
@@ -71,17 +71,6 @@
         </plugins>
     </build>
 
-    <dependencyManagement>
-        <dependencies>
-            <!-- JUnit regression testing framework. -->
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${version.junit}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
         <!-- required java dependencies -->
         <!-- todo : version numbers -->
@@ -116,13 +105,6 @@
             <artifactId>javax.el</artifactId>
             <version>3.0.0</version>
         </dependency>
-        <!-- todo : required ? -->
-        <!--<dependency>-->
-            <!--<groupId>javax.enterprise</groupId>-->
-            <!--<artifactId>cdi-api</artifactId>-->
-            <!--<version>2.0</version>-->
-            <!--<scope>provided</scope>-->
-        <!--</dependency>-->
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -169,7 +151,14 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- START - RestEasy -->
+        <!-- START - required RestEasy dependencies -->
+        <dependency>
+            <groupId>org.jboss.weld.servlet</groupId>
+            <artifactId>weld-servlet</artifactId>
+            <version>${version.weld-servlet}</version>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-undertow</artifactId>
@@ -206,13 +195,6 @@
             <version>${version.resteasy}</version>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.jboss.weld.servlet</groupId>
-            <artifactId>weld-servlet</artifactId>
-            <version>${version.weld-servlet}</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- END - RestEasy -->
+        <!-- END - required RestEasy dependencies -->
     </dependencies>
 </project>

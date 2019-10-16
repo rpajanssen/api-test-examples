@@ -1,6 +1,6 @@
 package com.abnamro.examples.jaxrs.exceptionhandling;
 
-import com.abnamro.examples.dao.exceptions.InvalidDataException;
+import com.abnamro.examples.dao.exceptions.PersonAlreadyExistsException;
 import com.abnamro.examples.domain.api.ErrorResponse;
 
 import javax.ws.rs.core.MediaType;
@@ -19,11 +19,11 @@ import javax.ws.rs.ext.Provider;
  * See DefaultExceptionHandler class for a lot more explanation about the patterns and examples!
  */
 @Provider
-public class InvalidDataExceptionHandler implements ExceptionMapper<InvalidDataException> {
+public class PersonAlreadyExistsExceptionHandler implements ExceptionMapper<PersonAlreadyExistsException> {
     private static final String MESSAGE_TEMPLATE = "%s %s";
 
     @Override
-    public Response toResponse(InvalidDataException exception) {
+    public Response toResponse(PersonAlreadyExistsException exception) {
         return Response.status(Response.Status.BAD_REQUEST)
                 .entity(new ErrorResponse(Response.Status.BAD_REQUEST.name(), buildErrorMessage(exception)))
                 .type(MediaType.APPLICATION_JSON_TYPE)

@@ -4,12 +4,10 @@ import com.abnamro.examples.aspects.Logger;
 import com.abnamro.examples.dao.HardCodedPersonDAO;
 import com.abnamro.examples.dao.PersonDAO;
 import com.abnamro.examples.domain.api.Person;
-import com.abnamro.examples.jaxrs.exceptionhandling.ConstraintViolationHandler;
-import com.abnamro.examples.jaxrs.exceptionhandling.DefaultExceptionHandler;
-import com.abnamro.examples.jaxrs.exceptionhandling.InvalidDataExceptionHandler;
-import com.abnamro.examples.jaxrs.exceptionhandling.ValidationExceptionHandler;
+import com.abnamro.examples.jaxrs.exceptionhandling.*;
 import com.abnamro.examples.jaxrs.filters.AddCustomHeaderResponseFilter;
 import com.abnamro.examples.jaxrs.filters.RestrictRequestSizeRequestFilter;
+import com.abnamro.examples.jaxrs.filters.StatusFilter;
 import com.abnamro.examples.jaxrs.interceptors.GZIPWriterInterceptor;
 import com.abnamro.examples.jaxrs.interceptors.RemoveBlacklistedLastNameRequestInterceptor;
 import com.abnamro.examples.utils.InMemoryLogger;
@@ -41,8 +39,10 @@ public class DefaultPersonResourceUsingJerseyAndAFakeDependencyIT extends Abstra
     protected ResourceConfig registerServerDependencies(ResourceConfig resourceConfig) {
         resourceConfig.register(RestrictRequestSizeRequestFilter.class);
         resourceConfig.register(AddCustomHeaderResponseFilter.class);
+        resourceConfig.register(StatusFilter.class);
 
-        resourceConfig.register(InvalidDataExceptionHandler.class);
+        resourceConfig.register(PersonAlreadyExistsExceptionHandler.class);
+        resourceConfig.register(PersonDoesNotExistExceptionHandler.class);
         resourceConfig.register(ConstraintViolationHandler.class);
         resourceConfig.register(ValidationExceptionHandler.class);
         resourceConfig.register(DefaultExceptionHandler.class);

@@ -4,12 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 /**
- * Can you guess why there are no setters?
- *
- * Though... keeping this up and using a (de)serialization framework can be difficult!
- *
  * Note: We added the validation annotations to demonstrate automatic validation and custom error handling with JAX-RS.
  *
  * Note: we have generified some test classes, using them for different resource implementations that implement the same
@@ -72,5 +69,18 @@ public class Person {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Person)) return false;
+        Person person = (Person) o;
+        return id == person.id && Objects.equals(firstName, person.firstName) && Objects.equals(lastName, person.lastName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName);
     }
 }
