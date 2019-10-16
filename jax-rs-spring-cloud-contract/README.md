@@ -31,8 +31,8 @@ Check out the jax-rs-rest-easy example project to learn more about RestEasy usag
 
 I just wanna run it: `mvn clean integration-test`
 
-Generated test will be in the target folder and will be automatically run with the traditional
-surefire reports.
+Generated tests will be in the target folder and will be automatically run with the traditional
+surefire reports as output.
 
 # How to add Spring Cloud Contract to your Spring Boot project?
 

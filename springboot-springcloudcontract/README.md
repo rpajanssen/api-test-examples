@@ -28,8 +28,8 @@ This project will focus on the generation of the test code!
 
 I just wanna run it: `mvn clean test`
 
-Generated test will be in the target folder and will be automatically run with the traditional
-surefire reports.
+Generated tests will be in the target folder and will be automatically run with the traditional
+surefire reports as output.
 
 # How to add Spring Cloud Contract to your Spring Boot project?
 
