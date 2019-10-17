@@ -3,7 +3,7 @@
 This example project will help you write integration tests for SpringBoot REST resources using RestAssured
 and using Spring MockMvc (yeah... a bonus!).
 
-Note that you have to question yourselves why you are using RestAssured if you are using Spring Boot?
+Note that you have to question yourselves why you are using RestAssured if you are using Spring Boot!
 
 # Requirements
 
