@@ -1,22 +1,26 @@
 package com.example.examples.domain.db;
 
 import com.example.examples.domain.api.Person;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 import javax.persistence.*;
 import java.util.Objects;
 
-// todo : explain why this class exists next to Person API model
 /**
- * A table-generator is specified and used for the 'id' generation so we can control the initial value of the generated
- * id's. This way we have reserved the first 1000 entries for test data sets and programmatically added persons will
- * start with an id > 1000, so we will not have any uniqueness constraint validations.
+ * We implemented a custom id generator to enable setting the id's ourselves by simply setting it! If it is not null,
+ * it won't be overwritten. This is to enable DB state manipulation for test purposes from Karate using the API under
+ * test.
  */
 @Entity
 @Table(name = "PERSONS")
-@TableGenerator(name = "GEN_PERSONS", table = "ID_PERSONS", initialValue = 1000)
 public class PersonEntity {
     @Id
-    @GeneratedValue(generator = "GEN_PERSONS")
+    @GeneratedValue(generator="idGenerator")
+    @GenericGenerator(
+            name="idGenerator", strategy="com.example.examples.hibernate.IdGenerator",
+            parameters = @Parameter(name = "initial_value", value = "1001")
+    )
     private Long id;
 
     @Column(nullable = false, name = "FIRST_NAME")

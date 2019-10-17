@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 
 public enum ErrorCodes {
     PERSON_NOT_FOUND("0010", HttpStatus.NOT_FOUND),
+    PERSON_ALREADY_EXISTS("0015", HttpStatus.BAD_REQUEST),
     PERSON_INVALID("0020", HttpStatus.BAD_REQUEST),
 
     TOO_MANY_REQUESTS("0101", HttpStatus.TOO_MANY_REQUESTS),

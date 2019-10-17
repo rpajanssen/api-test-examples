@@ -19,10 +19,10 @@ Feature: Setup the environment before a person REST API scenario is executed
 
   Background:
     * table persons
-      | firstName | lastName |
-      | 'Jan'  |   'Janssen' |
-      | 'Pieter' | 'Pietersen' |
-      | 'Erik' |  'Eriksen' |
+      | id | firstName | lastName |
+      | 1 | 'Jan'  |  'Janssen' |
+      | 2 | 'Pieter' | 'Pietersen' |
+      | 3 | 'Erik' |  'Eriksen' |
 
   Scenario:
     * def featureFile = supportFolderPath + 'add_person.feature'

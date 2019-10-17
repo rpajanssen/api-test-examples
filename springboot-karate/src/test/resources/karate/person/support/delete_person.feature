@@ -17,4 +17,4 @@ Feature: common reusable feature to delete a person
   Scenario:
     Given path '/' + id
     When method delete
-    Then status 202
+    Then status 204

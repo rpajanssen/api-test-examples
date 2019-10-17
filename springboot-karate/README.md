@@ -5,6 +5,17 @@ This example project will help you write integration tests for SpringBoot REST r
 Karate used to be build on top of Cucumber but they broke free from Cucumber. The latest version is no
 longer build on top / dependent on Cucumber.
 
+We implemented two Karate test runners. One executes the features sequential, one executes the features
+in parallel and integrates with Cucumber Reports. Note however that although running the scenarios in parallel
+seems useful... it will severely hamper you! Just look at the feature file! You may need the occasional
+trick and/or you may not be able to actually include scenarios! Concurrency can be a b*tch!  
+
+In the _surefire-reports_ folder an html report will be available for the sequential executed features.
+The parallel executed features will produce a json file that will be used by Cucumber Reports to produce
+a report that will be exported to the _cucumber-html-reports_ folder.
+
+Of course the traditional surefire reports will also be generated.
+
 # Requirements
 
 * maven 3.6.1 (or higher)
@@ -14,8 +25,6 @@ longer build on top / dependent on Cucumber.
 
 I just wanna run it: `mvn clean integration-test`
 
-Generated tests will be in the target folder and will be automatically run with the traditional
-surefire reports as output.
 
 # How to add Spring Cloud Contract to your Spring Boot project?
 
@@ -23,17 +32,18 @@ surefire reports as output.
   * core karate
   * optional UI
   * optional integration with Cucumber Reports 
-- java integration test class that:
-  - starts up the application
-  - sets up part of the karate environment
-  - will run all features
-- karate config file
-- feature files
-  - main feature files
-  - supporting feature files
-
--> sure-fire reports
--> cucumber reports
+* implement java integration test class that serves as a Karate feature runner:
+  * it starts up the application
+  * it sets up (part of) the karate environment
+  * it will run all features
+  * optionally it integrates with Cucumber Reports
+* implement karate config file
+  * it sets up the environment / context the Karate test will use when executed
+  * a lot more is possible then we do in this example (see the Karate documentation)
+* implement feature files
+  * main feature files : the actual features
+  * supporting feature files : plumbing used by the main feature files - often having supporting
+    features for setup/cleanup etc.
 
 # Pros
 
@@ -47,15 +57,13 @@ surefire reports as output.
 
 # Cons
 
-* implementation wise, it seems a bit inconsistent sometimes(before/after hooks, tags, ...)
-  * a somewhat rude narcissistic main developer on the Karate project
 * if you need the more complex karate features pretty quick -> you need to be a developer!
-* occasional different behavior running from your IDE and running a mvn command from the command line
-* cucumber reports require json test output, json test output only generated when running the tests in parallel 
+* managing the required state for your test to start may get complicated
+* cucumber reports require json test output, json test output only generated when running the tests in parallel
+* it does not always work as expected (as example: tags, ignoring features, ...) 
 
 ## Bugs
 
-* test cleanup might fail because test scenario runs before after-scenario has finished
 * delete_person feature is evaluated even though it is ignored and then the id (argument) is not known
   * mvn clean integration test from terminal : works
   * mvn clean integration test from ide configuration : delete_person feature is incorrectly executed/evaluated
@@ -63,16 +71,11 @@ surefire reports as output.
         
 ## Issues
 
-You have a 'background' in which you can run an afterScenario or afterFeature. There is no beforeScenario,
-that is each command in the 'background' by default and also NO beforeFeature. You have to use the 'callonce'
-command to mimic a before feature.
-
 Use of tags is supported but not implemented well. There is a @parallel tag that you can use to run
 scenarios in parallel. Is has an argument (a value) that is true or false like: @parallel=false. 
 You are supposed to be able to use the tags to include/exclude features from running. But... if I
 annotated a feature with @parallel=false and run the suite with '~@parallel' then this won't work!
 For our purposes we had to define two tags ourselves
-        
         
 # Useful links        
         

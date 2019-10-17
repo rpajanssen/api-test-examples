@@ -15,7 +15,7 @@ Feature: common reusable feature to add a person
     * url testBaseUrl + '/api/person'
 
   Scenario:
-    Given request { "firstName":"#(firstName)","lastName":"#(lastName)" }
+    Given request { "id":"#(id)","firstName":"#(firstName)","lastName":"#(lastName)" }
     When method post
     Then status 201
     And match response == { id:"#number","firstName":"#(firstName)","lastName":"#(lastName)" }

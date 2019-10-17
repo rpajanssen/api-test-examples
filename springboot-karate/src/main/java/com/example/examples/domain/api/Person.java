@@ -6,7 +6,6 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
-// todo : explain why this class exists next to PersonEntity
 public class Person {
     private Long id;
 

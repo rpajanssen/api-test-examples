@@ -56,7 +56,6 @@ import static org.springframework.test.util.AssertionErrors.assertTrue;
  *
  * NOTE: Default this integration test is disabled because it interferes with the other integration test(s).
  */
-@Disabled
 @KarateOptions
 class PersonCrudResourceUsingKarateRunningTestInParallelIT {
     private static final int maxConcurrentTest = 5;

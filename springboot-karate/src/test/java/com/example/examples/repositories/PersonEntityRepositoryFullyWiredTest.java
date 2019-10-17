@@ -43,7 +43,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @DBRider
 @SpringBootTest
-@ActiveProfiles(AvailableProfiles.LIVE)
+@ActiveProfiles(AvailableProfiles.LOCAL)
 class PersonEntityRepositoryFullyWiredTest {
 
     @Autowired
