@@ -93,13 +93,11 @@ do __NOT__ have to refactor any test!
 # Cons
 
 * when mocking, you have to define ALL mocking behavior required for ALL the scenarios the contracts
-describe for all generated tests up front in the base test classes
+  describe for all generated tests up front in the base test classes
 * different REST API behavior (like compressing the returned result) for different APIs require 
-different base test class implementations (see jax-rs-spring-cloud-contract equivalent example project)
+  different base test class implementations
 * only one test mode supported per project (maven plugin configuration)
-* compatibility issues with rest-assured
-* versioning issues with dependencies in the Spring BOM
-* a buy-in into Spring
+* a little buy-in into Spring - just one or two Spring Cloud libraries
 * might not be using the same application container as in prod
 
 # Useful links
@@ -107,3 +105,5 @@ different base test class implementations (see jax-rs-spring-cloud-contract equi
 * https://martinfowler.com/articles/consumerDrivenContracts.html
 * https://spring.io/projects/spring-cloud-contract
 * https://cloud.spring.io/spring-cloud-contract/reference/html/project-features.html#features-jax-rs
+* https://resteasy.github.io/
+* https://www.baeldung.com/integration-testing-a-rest-api
