@@ -38,7 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DBRider
-@ActiveProfiles(AvailableProfiles.LIVE)
+@ActiveProfiles(AvailableProfiles.LOCAL)
 class PersonCrudResourceUsingRestAssuredIT {
     private static final String BASE_URL = "http://localhost";
     private static final String BASE_API = "/api/person";
@@ -81,10 +81,8 @@ class PersonCrudResourceUsingRestAssuredIT {
     @DataSet(value = "persons.yml", cleanBefore = true, cleanAfter = true, strategy = SeedStrategy.CLEAN_INSERT)
     @ExpectedDataSet("expected_persons_after_update.yml")
     void shouldUpdateAPerson() {
-        Person person = given().when().contentType(ContentType.JSON).body(new Person(3L, "Erik", "Erikson")).put(BASE_API).as(Person.class);
-
-        assertThat(person).isNotNull();
-        assertThat(person).isEqualTo(new Person(3L, "Erik", "Erikson"));
+        given().when().contentType(ContentType.JSON).body(new Person(3L, "Erik", "Erikson")).put(BASE_API)
+                .then().assertThat().statusCode(HttpStatus.OK.value());
     }
 
     @Test
@@ -120,6 +118,6 @@ class PersonCrudResourceUsingRestAssuredIT {
     @ExpectedDataSet("expected_persons_after_delete.yml")
     void shouldDeleteAPerson() {
         given().when().contentType(ContentType.JSON)
-                .delete(BASE_API + "/2").then().assertThat().statusCode(HttpStatus.ACCEPTED.value());
+                .delete(BASE_API + "/2").then().assertThat().statusCode(HttpStatus.NO_CONTENT.value());
     }
 }

@@ -1,6 +1,7 @@
 package com.example.examples.rest.resources;
 
-import com.example.examples.dao.PersonDao;
+import com.example.examples.dao.PersonDAO;
+import com.example.examples.dao.exceptions.PersonNotFoundException;
 import com.example.examples.domain.api.ErrorResponse;
 import com.example.examples.domain.api.Person;
 import com.example.examples.domain.api.SafeList;
@@ -67,7 +68,7 @@ class PersonCrudResourceUsingMockMvcIT {
     private MockMvc mockMvc;
 
     @MockBean
-    private PersonDao personDao;
+    private PersonDAO personDao;
 
     @AfterEach
     void cleanup() {
@@ -125,7 +126,7 @@ class PersonCrudResourceUsingMockMvcIT {
 
     @Test
     void shouldAddAPerson() throws Exception {
-        when(personDao.save(any(Person.class))).thenReturn(new Person(1001L, "Katy", "Perry"));
+        when(personDao.add(any(Person.class))).thenReturn(new Person(1001L, "Katy", "Perry"));
 
         String body = getObjectMapper().writer().writeValueAsString(new Person(null, "Katy", "Perry"));
         MvcResult mvcResult = mockMvc.perform(post("/api/person").contentType(MediaType.APPLICATION_JSON).content(body))
@@ -142,35 +143,23 @@ class PersonCrudResourceUsingMockMvcIT {
     @Test
     void shouldUpdateAPerson() throws Exception {
         when(personDao.existsById(3L)).thenReturn(true);
-        when(personDao.save(any(Person.class))).thenReturn(new Person(3L, "Erik", "Erikson"));
+        when(personDao.add(any(Person.class))).thenReturn(new Person(3L, "Erik", "Erikson"));
 
         String body = toJson(new Person(3L, "Erik", "Erikson"));
-        MvcResult mvcResult = mockMvc.perform(put("/api/person").contentType(MediaType.APPLICATION_JSON).content(body))
+        mockMvc.perform(put("/api/person").contentType(MediaType.APPLICATION_JSON).content(body))
                 .andExpect(status().isOk())
-
-                .andReturn();
-
-        Person person = getObjectMapper().readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<Person>() {});
-
-        assertThat(person).isNotNull();
-        assertThat(person).isEqualTo(new Person(3L, "Erik", "Erikson"));
+        ;
     }
 
     @Test
     void shouldNotUpdateIfPersonDoesNotExist() throws Exception {
-        when(personDao.existsById(25L)).thenReturn(false);
+        Person person = new Person(25L, "Johnie", "Hacker");
+        doThrow(new PersonNotFoundException(person, "person does not exist")).when(personDao).update(eq(person));
 
-        String body = toJson(new Person(25L, "Johnie", "Hacker"));
-        MvcResult mvcResult = mockMvc.perform(put("/api/person").contentType(MediaType.APPLICATION_JSON).content(body))
+        String body = toJson(person);
+        mockMvc.perform(put("/api/person").contentType(MediaType.APPLICATION_JSON).content(body))
                 .andExpect(status().isNotFound())
-                .andReturn();
-
-
-        ErrorResponse<Person> errorResponse = getObjectMapper().readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<ErrorResponse<Person>>() {});
-
-        assertThat(errorResponse).isNotNull();
-        assertThat(errorResponse.getCode()).isEqualTo(ErrorCodes.PERSON_NOT_FOUND.getCode());
-        assertThat(errorResponse.getData()).isEqualTo(new Person(25L, "Johnie", "Hacker"));
+        ;
     }
 
     @Test
@@ -190,7 +179,7 @@ class PersonCrudResourceUsingMockMvcIT {
     @Test
     void shouldDeleteAPerson() throws Exception {
         mockMvc.perform(delete("/api/person/2").contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isNoContent())
         ;
 
         verify(personDao, times(1)).delete(eq(2L));

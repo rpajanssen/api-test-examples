@@ -1,9 +1,10 @@
 package com.example.examples.rest.resources;
 
-import com.example.examples.dao.PersonDao;
+import com.example.examples.dao.PersonDAO;
+import com.example.examples.dao.exceptions.PersonAlreadyExistsException;
+import com.example.examples.dao.exceptions.PersonNotFoundException;
 import com.example.examples.domain.api.Person;
 import com.example.examples.domain.api.SafeList;
-import com.example.examples.exceptions.PersonNotFoundException;
 import com.example.examples.rest.exceptionhandlers.PersonResourceExceptionHandling;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -25,9 +26,9 @@ import javax.validation.Valid;
 @RequestMapping("/api/person")
 @PersonResourceExceptionHandling
 public class PersonCrudResource {
-    private final PersonDao personDao;
+    private final PersonDAO<Person> personDao;
 
-    public PersonCrudResource(PersonDao personDao) {
+    public PersonCrudResource(PersonDAO<Person> personDao) {
         this.personDao = personDao;
     }
 
@@ -39,21 +40,18 @@ public class PersonCrudResource {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Person addPerson(@Valid @RequestBody Person person) {
-        return personDao.save(person);
+    public Person addPerson(@Valid @RequestBody Person person) throws PersonAlreadyExistsException {
+        return personDao.add(person);
     }
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public Person updatePerson(@Valid @RequestBody Person person) throws PersonNotFoundException {
-        if(!personDao.existsById(person.getId())) {
-            throw new PersonNotFoundException(person);
-        }
-        return personDao.save(person);
+    public void updatePerson(@Valid @RequestBody Person person) throws PersonNotFoundException {
+        personDao.update(person);
     }
 
     @DeleteMapping(path="/{personId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletePerson(@PathVariable("personId") long personId) {
         personDao.delete(personId);
     }

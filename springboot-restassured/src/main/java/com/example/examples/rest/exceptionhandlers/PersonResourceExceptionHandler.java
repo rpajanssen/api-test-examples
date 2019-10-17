@@ -1,9 +1,10 @@
 package com.example.examples.rest.exceptionhandlers;
 
+import com.example.examples.dao.exceptions.PersonAlreadyExistsException;
+import com.example.examples.dao.exceptions.PersonNotFoundException;
 import com.example.examples.domain.api.ErrorResponse;
 import com.example.examples.domain.api.Person;
 import com.example.examples.exceptions.ErrorCodes;
-import com.example.examples.exceptions.PersonNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -28,6 +29,13 @@ public class PersonResourceExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     ErrorResponse<Person> personNotFoundHandler(PersonNotFoundException exception) {
         return new ErrorResponse<>(exception.getPerson(), ErrorCodes.PERSON_NOT_FOUND.getCode());
+    }
+
+    @ResponseBody
+    @ExceptionHandler(PersonAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ErrorResponse<Person> personAlreadyExistsHandler(PersonAlreadyExistsException exception) {
+        return new ErrorResponse<>(exception.getPerson(), ErrorCodes.PERSON_ALREADY_EXISTS.getCode());
     }
 
     /**
