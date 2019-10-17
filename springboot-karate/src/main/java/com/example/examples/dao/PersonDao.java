@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-// todo : unit test
-// todo : document (explain why! -  Person - PersonEntity)
 @Component
 public class PersonDao {
     private final PersonEntityRepository personRepository;
