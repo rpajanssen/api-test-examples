@@ -8,6 +8,9 @@ SpringBoot with Karate and SpringBoot with SpringCloudContract.
 
 The two SpringCloudContract examples will show you how you can generate your REST API integration tests!
 
+The SpringBoot with RestAssured example poses you a question... why even use RestAssured if you can use 
+Springs own MockMVC?
+
 # Requirements
 
 * maven 3.6.1 (or higher)

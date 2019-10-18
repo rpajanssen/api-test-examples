@@ -3,6 +3,10 @@
 This example project will help you write integration tests for SpringBoot REST resources using RestAssured
 and using Spring MockMvc (yeah... a bonus!).
 
+We have two MockMVC examples! One sliced test that mocks non-MVC dependencies/classes. An one fully wired
+MockMVC test (nothing mocked!), that works exactly the same as a fully wired RestAssured driven integration 
+test.
+
 Note that you have to question yourselves why you are using RestAssured if you are using Spring Boot!
 
 # Requirements
@@ -31,7 +35,8 @@ I just wanna run it: `mvn clean integration-test`
 
 ## Cons RestAssured
 
-* some incompatibilities with the Spring BOM
+* you need to add more dependencies to your pom
+* some incompatibilities with the Spring BOM (dependency hell)
       
 # MockMVC   
       
@@ -39,6 +44,9 @@ I just wanna run it: `mvn clean integration-test`
 
 * add spring-boot-starter-test as dependency to your pom.xml
 * implement java integration test classes
+
+Note: RestAssured has a MockMVC integration. It just requires you to add a spring-mock-mvc test dependency
+and then you can write integration test using Rest Assured Mock MVC :)
       
 ## Pros MockMVC
 
@@ -54,5 +62,7 @@ I just wanna run it: `mvn clean integration-test`
       
 # Useful links        
         
+* https://spring.io/guides/gs/testing-web/
 * http://rest-assured.io/
 * https://www.baeldung.com/rest-assured-tutorial
+* https://www.baeldung.com/spring-mock-mvc-rest-assured
