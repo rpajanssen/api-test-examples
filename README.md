@@ -2,13 +2,19 @@
 
 This example project will help you write integration tests for your REST resources.
 
-It has sub projects demonstrating JAX-RS with JerseyTest, JAX-RS with RestEasy, JAX-RS with 
-SpringCloudContract, SpringBoot with RestAssured (and SpringBoot with MockMVC in the same project), 
-SpringBoot with Karate and SpringBoot with SpringCloudContract.
+The sub projects demonstrate REST API testing:
+* JAX-RS with JerseyTest
+* JAX-RS with RestEasy
+* JAX-RS with SpringCloudContract
+* SpringBoot with RestAssured
+  * and with SpringBoot with MockMVC 
+  * and with SpringBoot with RestAssuredMockMVC 
+* SpringBoot with Karate
+* SpringBoot with SpringCloudContract
 
 The two SpringCloudContract examples will show you how you can generate your REST API integration tests!
 
-The SpringBoot with RestAssured example poses you a question... why even use RestAssured if you can use 
+The SpringBoot with RestAssured example(s) poses you a question... why even use RestAssured if you can use 
 Springs own MockMVC?
 
 # Requirements

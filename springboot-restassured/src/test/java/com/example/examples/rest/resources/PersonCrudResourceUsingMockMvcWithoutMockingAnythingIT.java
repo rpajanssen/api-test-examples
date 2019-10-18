@@ -25,7 +25,6 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -110,7 +109,9 @@ class PersonCrudResourceUsingMockMvcWithoutMockingAnythingIT {
         Person person = getObjectMapper().readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<Person>() {});
 
         assertThat(person).isNotNull();
-        assertThat(person).isEqualTo(new Person(1001L, "Katy", "Perry"));
+        assertThat(person.getId()).isNotNull();
+        assertThat(person.getFirstName()).isEqualTo("Katy");
+        assertThat(person.getLastName()).isEqualTo("Perry");
     }
 
     @Test

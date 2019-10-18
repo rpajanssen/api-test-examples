@@ -21,8 +21,10 @@
 
         <spring-boot.version>2.1.9.RELEASE</spring-boot.version>
 
-        <rest-assured.version>4.0.0</rest-assured.version>
+        <rest-assured.version>4.1.2</rest-assured.version>
         <junit.jupiter.version>5.5.0</junit.jupiter.version>
+        <junit-platform-runner.version>1.5.2</junit-platform-runner.version>
+        <mockito.version>3.1.0</mockito.version>
         <rider-spring.version>1.7.2</rider-spring.version>
 
         <spring.fox.version>2.9.2</spring.fox.version>
@@ -113,6 +115,30 @@
         </dependency>
         <!-- END - rest-assured requirements -->
 
+        <!-- START - rest-assured mock mvc requirements -->
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>spring-mock-mvc</artifactId>
+            <version>${rest-assured.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- END - rest-assured mock mvc requirements -->
+
+        <!-- START - some mockito dependencies you may need using RestAssuredMockMvc -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- START - some mockito dependencies you may need using RestAssuredMockMvc -->
+
         <dependency>
             <groupId>com.github.database-rider</groupId>
             <artifactId>rider-spring</artifactId>
@@ -150,6 +176,12 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-runner</artifactId>
+            <version>${junit-platform-runner.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -7,6 +7,9 @@ We have two MockMVC examples! One sliced test that mocks non-MVC dependencies/cl
 MockMVC test (nothing mocked!), that works exactly the same as a fully wired RestAssured driven integration 
 test.
 
+And... we also have some examples of RestAssuredMockMvc! Yes... RestAssured integrates with MockMVC. Again
+we demonstrate a mocked environment and a fully wired.
+
 Note that you have to question yourselves why you are using RestAssured if you are using Spring Boot!
 
 # Requirements
@@ -26,6 +29,8 @@ I just wanna run it: `mvn clean integration-test`
   * core: rest-assured and rest-assured-common
   * fix: json-path and xml-path are required when using the Spring Boot BOM 
 * implement java integration test classes 
+
+Note that RestAssured provides an integration with MockMVC as well!
 
 ## Pros RestAssured
 

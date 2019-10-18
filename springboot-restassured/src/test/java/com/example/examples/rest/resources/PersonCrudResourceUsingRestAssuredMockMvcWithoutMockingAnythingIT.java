@@ -12,14 +12,17 @@ import com.github.database.rider.spring.api.DBRider;
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
+import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.context.WebApplicationContext;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,25 +37,27 @@ import static org.assertj.core.api.Assertions.assertThat;
  * We will use DBRider to initiate the starting points for each test regarding the database content. By annotating each
  * test with DataSet we can define the content the database will have before the test is run. By using the ExpectedDataSet
  * annotation we can specify what should be the expected content when the test has finished.
- *
- * Note how we use a regular expression in the expected result set after an insert, because we cannot know for sure the
- * generated id!
  */
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DBRider
 @ActiveProfiles(AvailableProfiles.LOCAL)
-class PersonCrudResourceUsingRestAssuredIT {
+class PersonCrudResourceUsingRestAssuredMockMvcWithoutMockingAnythingIT {
     private static final String BASE_URL = "http://localhost";
     private static final String BASE_API = "/api/person";
 
     @LocalServerPort
     private int port;
 
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+
     @BeforeEach
     void setup() {
         RestAssured.baseURI = BASE_URL;
         RestAssured.port = port;
+
+        RestAssuredMockMvc.webAppContextSetup(webApplicationContext);
     }
 
     @Test
@@ -77,7 +82,9 @@ class PersonCrudResourceUsingRestAssuredIT {
         Person person = given().when().contentType(ContentType.JSON).body(new Person(null, "Katy", "Perry")).post(BASE_API).as(Person.class);
 
         assertThat(person).isNotNull();
-        assertThat(person).isEqualTo(new Person(1001L, "Katy", "Perry"));
+        assertThat(person.getId()).isNotNull();
+        assertThat(person.getFirstName()).isEqualTo("Katy");
+        assertThat(person.getLastName()).isEqualTo("Perry");
     }
 
     @Test

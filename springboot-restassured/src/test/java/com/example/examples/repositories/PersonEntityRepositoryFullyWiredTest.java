@@ -28,6 +28,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Note that with the data set annotations of DBRider we can write really clean unit tests and have automated assertions
  * against a predefined expected data set.
  *
+ * Note how we use a regular expression in the expected result set after an insert, because we cannot know for sure the
+ * generated id.
+ *
  * Note that normally you would not write a test like this for a plain crud/jpa repository because then you are
  * only testing the Spring repository implementations. Only if you added your own query methods to your repository
  * it would make sense to test these.
