@@ -40,7 +40,7 @@ Note that RestAssured provides an integration with MockMVC as well!
 
 ## Cons RestAssured
 
-* you need to add more dependencies to your pom
+* you need to add - too many? - dependencies to your pom
 * some incompatibilities with the Spring BOM (dependency hell)
       
 # MockMVC   
