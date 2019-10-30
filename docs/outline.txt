@@ -1,0 +1,92 @@
+DevCon
+
+JAXRS REST-EASY
+
+controller
+- JAXRS annotations on a generified interface
+ - custom interceptors (body): compress-data, black-lis-last-names
+ - custom filters (headers): http-status
+ - bean validation : @Valid)
+
+- cdi interceptors for logging : @EnableTracing
+- global exception handling (exception mappers)
+
+- one dependency on a DAO
+
+pom
+- java 11 -> explicitly import the specs/modules you will use instead of the all-inlcuding javaee dependency
+- required rest-easy dependencies
+  - undertow (others are possible)
+  - client
+  - (de)serialization, validator, cdi
+
+
+Implement your test class:
+- before each
+  -> setup a rest server (configure the resources and dependencies under test)
+  -> setup a rest client
+
+- after each : cleanup
+
+- implement your tests using using the rest client
+  -> client
+  -> simply use junit-jupiter assertions
+  -> gzipreader
+  -> validation / error handling
+
+
+SPRING-BOOT KARATE
+
+- quick 'hello devcon example'
+  - start the app
+  - run the test
+
+controller
+- SpringBoot annotations
+ - bean validation : @Valid)
+
+- cdi interceptors for logging : @EnableTracing
+- global exception handling (error handlers)
+
+- one dependency on a DAO
+
+pom
+- add the Karate dependencies
+  - core karate
+  - optional integration with Cucumber Reports
+- implement java integration test class that serves as a Karate feature runner:
+  - it starts up the application
+  - it sets up (part of) the karate environment
+  - it will run all features
+  - optionally it integrates with Cucumber Reports
+
+implement karate config file
+- it sets up the environment / context the Karate test will use when executed
+
+- implement feature files
+  - main feature files : the actual features
+  - supporting feature files : plumbing used by the main feature files - often having supporting
+    features for setup/cleanup etc.
+
+- main feature file
+  - background
+    - url
+    - set up the proper state (like DB content)
+    - cleanup afterwards
+  - scenarios
+
+- show a cucumber report
+  - requirement : run tests in parallel (why o why)
+    -> might not be that easy
+
+
+SPRING-BOOT CLOUD CONTRACT
+
+- add spring cloud contract and rest-assured dependencies in pom.xml
+- Add and configure spring-cloud-contract-maven-plugin configuration to the pom.xml
+  - Configure the unit test framework of choice (here we use Junit5).
+  - Configure the test mode.
+  - Configure the location of your base test class(es).
+  - Configure how the generated classes will be bound to a base test class!
+- Add a base test class (or more when required).
+- Add the contracts.
