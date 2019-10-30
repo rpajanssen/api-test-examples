@@ -1,11 +1,12 @@
 # What?
 
-This example project will help you write integration tests for your REST resources.
+This example project will help you write (or generate) integration tests for your REST resources.
 
 The sub projects demonstrate REST API testing:
-* JAX-RS with JerseyTest
-* JAX-RS with RestEasy
-* JAX-RS with SpringCloudContract
+* a JAX-RS application with JerseyTest
+* a JAX-RS application with RestEasy
+* a JAX-RS application with SpringCloudContract
+* a MicroProfile JAX-RS application with KumuluzEE and RestAssured
 * SpringBoot with RestAssured
   * and with SpringBoot with MockMVC 
   * and with SpringBoot with RestAssuredMockMVC 
@@ -25,3 +26,4 @@ Springs own MockMVC?
 # TL;DR
 
 Just run all tests: `mvn clean integration-test`
+
