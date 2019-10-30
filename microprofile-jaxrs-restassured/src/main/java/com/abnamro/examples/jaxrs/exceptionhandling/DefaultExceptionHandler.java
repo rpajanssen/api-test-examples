@@ -57,10 +57,6 @@ public class DefaultExceptionHandler implements ExceptionMapper<Exception> {
 
     @Override
     public Response toResponse(Exception exception) {
-        // todo
-        System.err.println(exception.getMessage());
-        exception.printStackTrace();
-
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(new ErrorResponse(Response.Status.INTERNAL_SERVER_ERROR.name(), buildErrorMessage(exception)))
                 .type(MediaType.APPLICATION_JSON_TYPE)

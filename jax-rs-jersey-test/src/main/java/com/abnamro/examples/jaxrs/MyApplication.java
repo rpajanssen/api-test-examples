@@ -22,10 +22,8 @@ import java.util.Set;
 
 /**
  * Demo JAX-RS application that registers just one resource.
- *
- * To make CDI work (with RestEasy) we also added an empty beans.xml.
  */
-@ApplicationPath("/") // todo : figure out how to define path and test with rest-easy
+@ApplicationPath("/") // todo : figure out how to define path and test with jersey-test
 public class MyApplication extends Application {
     @Override
     public Set<Class<?>> getClasses() {

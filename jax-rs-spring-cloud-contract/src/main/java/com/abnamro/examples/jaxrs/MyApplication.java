@@ -22,10 +22,8 @@ import java.util.Set;
 
 /**
  * Demo JAX-RS application.
- *
- * To make CDI work (with RestEasy) we also added an empty beans.xml.
  */
-@ApplicationPath("/") // todo
+@ApplicationPath("/")
 public class MyApplication extends Application {
     @Override
     public Set<Class<?>> getClasses() {

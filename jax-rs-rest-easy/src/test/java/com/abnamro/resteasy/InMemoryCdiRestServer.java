@@ -9,7 +9,10 @@ import org.jboss.resteasy.spi.ResteasyDeployment;
 
 import java.io.IOException;
 
-// todo : document
+/**
+ * A test utility class that provides you with an in-memory jaxrs server that fully supports CDI. This
+ * implementation uses Undertow.
+ */
 public class InMemoryCdiRestServer extends AbstractRestServer implements AutoCloseable {
     private InMemoryCdiRestServer(Object... objects) {
         append(objects);
