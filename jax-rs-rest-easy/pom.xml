@@ -171,12 +171,6 @@
             <version>${version.resteasy}</version>
             <scope>test</scope>
         </dependency>
-        <!--dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jaxrs</artifactId>
-            <version>3.9.0}</version>
-            <scope>test</scope>
-        </dependency-->
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-jackson2-provider</artifactId>
