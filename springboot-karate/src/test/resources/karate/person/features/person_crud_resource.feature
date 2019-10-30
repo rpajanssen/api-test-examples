@@ -30,23 +30,23 @@ Feature: Testing the Person REST API with Karate
 
   Scenario: Should add a person
     Given request { id:1005, "firstName":"Katy","lastName":"Perry" }
-    When method post
+    When method POST
     Then status 201
     And match response == { id:"#number","firstName":"Katy","lastName":"Perry" }
 
   Scenario: Should update a person
     Given request {"id":"3","firstName":"Erik","lastName":"Erikson" }
-    When method put
+    When method PUT
     Then status 200
 
   Scenario: Should not update if the person data is invalid
     Given request {"id":"3","lastName":"Erikson" }
-    When method put
+    When method PUT
     Then status 400
     And match response.code == "0020"
     And match response == { "data":{ "id":3, "firstName":null,"lastName":"Erikson" },"code":"0020" }
 
   Scenario: Should delete a person
     Given path "/2"
-    When method delete
+    When method DELETE
     Then status 204

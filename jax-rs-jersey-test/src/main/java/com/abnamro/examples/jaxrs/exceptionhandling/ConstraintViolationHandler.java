@@ -24,10 +24,6 @@ import javax.ws.rs.ext.Provider;
 public class ConstraintViolationHandler implements ExceptionMapper<ConstraintViolationException> {
     private static final String CONSTRAINT_TEMPLATE = "%s %s\n";
 
-    /**
-     * Example default exception handler that will return a proper error-response in the response body and a
-     * HTTP 500 status code since we encounter some unexpected exception.
-     */
     @Override
     public Response toResponse(ConstraintViolationException exception) {
         return Response.status(Response.Status.BAD_REQUEST)

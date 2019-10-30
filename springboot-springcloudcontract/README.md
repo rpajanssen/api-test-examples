@@ -63,7 +63,7 @@ Assume you already added the required Spring Boot dependencies and the JUnit5 de
   selected Groovy in this example project. Check out the Spring documentation for all the options, there
   are many!
 
-You are good to go! Rune the maven test command and check the build directory (target) for a folder _generated-test-resources_.
+You are good to go! Run the maven test command and check the build directory (target) for a folder _generated-test-resources_.
 In that folder you will find the generated integration tests and in the surefire-reports folder you
 will find the test reports, they will have been run by the maven test command.
 

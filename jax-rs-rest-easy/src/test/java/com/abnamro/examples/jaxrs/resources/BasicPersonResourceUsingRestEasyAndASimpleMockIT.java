@@ -38,6 +38,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Minimal integration test of a JAX-RS resource using RestEasy and Undertow. The DAO will be mocked in this test
  * and we will override the producer in the Application-class.
  */
+@SuppressWarnings("Duplicates")
 @ExtendWith(MockitoExtension.class)
 public class BasicPersonResourceUsingRestEasyAndASimpleMockIT {
 

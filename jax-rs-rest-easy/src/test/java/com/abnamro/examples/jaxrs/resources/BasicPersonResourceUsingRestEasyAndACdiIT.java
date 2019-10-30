@@ -14,6 +14,7 @@ import io.undertow.Undertow;
 import io.undertow.servlet.Servlets;
 import io.undertow.servlet.api.DeploymentInfo;
 import org.apache.commons.lang3.StringUtils;
+import org.jboss.resteasy.cdi.CdiInjectorFactory;
 import org.jboss.resteasy.core.ResteasyDeploymentImpl;
 import org.jboss.resteasy.plugins.server.undertow.UndertowJaxrsServer;
 import org.jboss.resteasy.spi.ResteasyDeployment;
@@ -34,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Minimal integration test of a JAX-RS resource using RestEasy and Undertow.
  */
+@SuppressWarnings("Duplicates")
 @ExtendWith(MockitoExtension.class)
 public class BasicPersonResourceUsingRestEasyAndACdiIT {
 
@@ -45,11 +47,12 @@ public class BasicPersonResourceUsingRestEasyAndACdiIT {
         jaxrsServer = new UndertowJaxrsServer();
 
         ResteasyDeployment deployment = new ResteasyDeploymentImpl();
-        deployment.setInjectorFactoryClass(org.jboss.resteasy.cdi.CdiInjectorFactory.class.getName());
+        deployment.setInjectorFactoryClass(CdiInjectorFactory.class.getName());
         deployment.setApplication(new MyApplication());
 
         DeploymentInfo di = jaxrsServer.undertowDeployment(deployment, "/");
-        di.setDeploymentName("Undertow + RestEasy CDI example").setContextPath("").setClassLoader(MyApplication.class.getClassLoader());
+        di.setDeploymentName("Undertow + RestEasy CDI example")
+                .setContextPath("").setClassLoader(MyApplication.class.getClassLoader());
 
         //Add CDI listener
         di.addListeners(Servlets.listener(org.jboss.weld.environment.servlet.Listener.class));

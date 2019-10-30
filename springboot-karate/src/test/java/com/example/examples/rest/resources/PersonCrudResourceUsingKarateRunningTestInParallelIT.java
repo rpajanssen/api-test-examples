@@ -23,7 +23,11 @@ import static org.springframework.test.util.AssertionErrors.assertTrue;
 
 
 /**
- * Runner for the parallel Karate features.
+ * Runner for the parallel Karate features. It will:
+ * - start up the application
+ * - set up the karate environment
+ * - it will run all features
+ * - optionally it integrates with Cucumber Reports
  *
  * Since the philosophy of Karate is to have NO dependency on any Java code, we need to keep this class as empty as
  * possible. Normally you would only specify some Karate options (like which features should be run by this runner)
@@ -56,6 +60,7 @@ import static org.springframework.test.util.AssertionErrors.assertTrue;
  *
  * NOTE: Default this integration test is disabled because it interferes with the other integration test(s).
  */
+@SuppressWarnings("Duplicates")
 @KarateOptions
 class PersonCrudResourceUsingKarateRunningTestInParallelIT {
     private static final int maxConcurrentTest = 5;

@@ -30,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * This integration test will use the Application class. The Application class defines the complete setup of required
  * JAX-RS and CDI classes and by only listing the Application class the whole application will be setup.
  */
+@SuppressWarnings("Duplicates")
 class DefaultPersonResourceUsingRestEasyAndCdiIT {
     // use the rest-server that supports CDI
     private InMemoryCdiRestServer server;

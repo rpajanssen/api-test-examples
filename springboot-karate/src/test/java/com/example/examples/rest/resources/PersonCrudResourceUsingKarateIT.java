@@ -10,7 +10,10 @@ import java.io.File;
 
 
 /**
- * Runner for the Karate features.
+ * Runner for the Karate features. it will:
+ * - start up the application
+ * - set up the karate environment
+ * - it will run all features
  *
  * Since the philosophy of Karate is to have NO dependency on any Java code, we need to keep this class as empty as
  * possible. Normally you would only specify some Karate options (like which features should be run by this runner)
@@ -37,6 +40,7 @@ import java.io.File;
  * during startup of the tests dynamically and make them available in the Karate environment for use in the feature
  * files.
  */
+@SuppressWarnings("Duplicates")
 class PersonCrudResourceUsingKarateIT {
     private static final String supportFolderPath = ".." + File.separator + "support" + File.separator;
     private static final String featureFolderPath = "classpath:karate" + File.separator + "person" + File.separator + "features";

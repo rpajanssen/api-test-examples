@@ -25,6 +25,7 @@ import java.util.Set;
  */
 @ApplicationPath("/") // todo : figure out how to define path and test with jersey-test
 public class MyApplication extends Application {
+    @SuppressWarnings("Duplicates")
     @Override
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<>();

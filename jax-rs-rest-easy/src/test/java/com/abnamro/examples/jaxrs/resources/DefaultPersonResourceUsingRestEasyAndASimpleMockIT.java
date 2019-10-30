@@ -43,6 +43,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * tell RestEasy which other JAX-RS classes should be managed. This shows you how you can create a completely customized
  * set of wired classes for your test independent of the Application class setup.
  */
+@SuppressWarnings("Duplicates")
 @ExtendWith(MockitoExtension.class)
 class DefaultPersonResourceUsingRestEasyAndASimpleMockIT {
     // use the rest-server that does NOT support CDI

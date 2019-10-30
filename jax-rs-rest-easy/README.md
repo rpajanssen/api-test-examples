@@ -51,8 +51,7 @@ Note also how we handled the integration test for the one resource that compress
 
 # Cons
 
-* bean validation does NOT throw javax.validation.ValidationException so this will not be 
-  picked up our custom handler handler but by some default handler
+* environment setup can get a bit complex
 * not a production like application container
 
 # Useful links
