@@ -75,6 +75,8 @@ public class BasicPersonResourceUsingRestEasyAndACdiIT {
      * Note that this resource is the only resource that zips the returned result. So we have to 'tell' the client
      * to unzip the result before doing anything else. We do this by passing the gzip-reader-interceptor class as
      * provider to the client.
+     *
+     * This client does not recoqnize the encoding header and will not automatically unzip!
      */
     @Test
     void shouldReturnAllPersons() {

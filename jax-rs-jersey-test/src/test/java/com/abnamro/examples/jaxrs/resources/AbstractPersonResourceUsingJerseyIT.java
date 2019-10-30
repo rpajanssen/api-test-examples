@@ -87,6 +87,7 @@ public abstract class AbstractPersonResourceUsingJerseyIT<T extends Person> exte
     @Test
     public void shouldReturnAllPersons() {
         // note : register the incoming response unzipper for the jax-rs client jersey-test uses to call our server under-test
+        //        this client does not recoqnize the encoding header and will not automatically unzip
         client().register(GZIPReaderInterceptor.class);
 
         final SafeList<T> result = target("person/all").request().get(new GenericType<SafeList<T>>(){});

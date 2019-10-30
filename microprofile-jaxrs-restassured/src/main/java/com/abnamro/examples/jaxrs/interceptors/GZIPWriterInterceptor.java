@@ -27,7 +27,6 @@ public class GZIPWriterInterceptor implements WriterInterceptor {
 
     @Override
     public void aroundWriteTo(WriterInterceptorContext context) throws IOException {
-        // todo : update other projects as well
         MultivaluedMap<String,Object> headers = context.getHeaders();
         headers.add(CONTENT_ENCODING, CONTENT_ENCODING_TYPE);
 

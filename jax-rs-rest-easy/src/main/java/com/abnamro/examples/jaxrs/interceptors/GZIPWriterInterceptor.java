@@ -3,6 +3,7 @@ package com.abnamro.examples.jaxrs.interceptors;
 import com.abnamro.examples.jaxrs.bindings.CompressData;
 
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
 import javax.ws.rs.ext.WriterInterceptor;
 import javax.ws.rs.ext.WriterInterceptorContext;
@@ -30,9 +31,14 @@ import java.util.zip.GZIPOutputStream;
 @Provider
 @CompressData
 public class GZIPWriterInterceptor implements WriterInterceptor {
+    private static final String CONTENT_ENCODING = "Content-Encoding";
+    private static final String CONTENT_ENCODING_TYPE = "gzip";
 
     @Override
     public void aroundWriteTo(WriterInterceptorContext context) throws IOException, WebApplicationException {
+        MultivaluedMap<String,Object> headers = context.getHeaders();
+        headers.add(CONTENT_ENCODING, CONTENT_ENCODING_TYPE);
+
         try(GZIPOutputStream gzipOutputStream = new GZIPOutputStream(context.getOutputStream())) {
             context.setOutputStream(gzipOutputStream);
             context.proceed();
