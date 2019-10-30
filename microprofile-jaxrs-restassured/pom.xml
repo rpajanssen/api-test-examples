@@ -19,22 +19,22 @@
         <version.java>11</version.java>
 
         <kumuluzee.version>3.5.0</kumuluzee.version>
+        <kumuluzee-microprofile.version>3.5.0</kumuluzee-microprofile.version>
         <kumuluzee-arquillian-container.version>1.1.0</kumuluzee-arquillian-container.version>
         <arquillian.version>1.5.0.Final</arquillian.version>
 
-        <version.jackson>2.10.0</version.jackson>
         <version.commons-lang3>3.9</version.commons-lang3>
 
         <rest-assured.version>4.1.2</rest-assured.version>
+        <assertj.version>3.13.2</assertj.version>
+
         <version.mockito>2.23.4</version.mockito>
         <version.junit.jupiter>5.4.2</version.junit.jupiter>
         <version.surefire>2.22.1</version.surefire>
         <version.failsafe>2.22.1</version.failsafe>
 
-        <version.resteasy>4.3.1.Final</version.resteasy>
-        <version.weld-servlet>2.4.8.Final</version.weld-servlet>
-
         <version.mvn.war.plugin>3.2.3</version.mvn.war.plugin>
+        <version.mvn.resources.plugin>3.1.0</version.mvn.resources.plugin>
         <version.mvn.compiler.plugin>3.8.1</version.mvn.compiler.plugin>
         <version.mvn.compiler.plugin.jdk>11</version.mvn.compiler.plugin.jdk>
         <version.mvn.build-helper.plugin>11</version.mvn.build-helper.plugin>
@@ -46,7 +46,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>${version.mvn.resources.plugin}</version>
                 <configuration>
                     <outputDirectory>${project.build.directory}/classes</outputDirectory>
                     <resources>
@@ -125,6 +125,20 @@
     </dependencyManagement>
 
     <dependencies>
+        <!-- START - which KumuluzEE MicroProfile SPEC to use -->
+        <!--
+            Note: in the arquillian.xml we have specified 'fromPom' for the 'includeRequiredLibraries'
+            property implying that whatever dependency we specify below will be used.
+        -->
+        <dependency>
+            <groupId>com.kumuluz.ee</groupId>
+            <!--artifactId>kumuluzee-microProfile-2.2</artifactId-->
+            <artifactId>kumuluzee-microProfile-1.1</artifactId>
+            <version>${kumuluzee-microprofile.version}</version>
+        </dependency>
+        <!-- START - which KumuluzEE MicroProfile SPEC to use -->
+
+        <!-- START - KumuluzEE requirements -->
         <dependency>
             <groupId>com.kumuluz.ee</groupId>
             <artifactId>kumuluzee-core</artifactId>
@@ -141,10 +155,19 @@
             <groupId>com.kumuluz.ee</groupId>
             <artifactId>kumuluzee-cdi-weld</artifactId>
         </dependency>
-
         <dependency>
             <groupId>com.kumuluz.ee</groupId>
             <artifactId>kumuluzee-bean-validation-hibernate-validator</artifactId>
+            <!--
+                Note : this version of this component has a dependency on a snapshot version of javafx!!!
+                Exclude it otherwise builds take really long (and why to we need it?)!
+            -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx.base</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.kumuluz.ee</groupId>
@@ -154,22 +177,9 @@
             <groupId>com.kumuluz.ee</groupId>
             <artifactId>kumuluzee-el-uel</artifactId>
         </dependency>
+        <!-- END - KumuluzEE requirements -->
 
-
-        <!-- todo -->
-        <!--<dependency>-->
-            <!--<groupId>com.kumuluz.ee.rest</groupId>-->
-            <!--<artifactId>kumuluzee-rest-core</artifactId>-->
-            <!--<version>1.2.3</version>-->
-        <!--</dependency>-->
-        <dependency>
-            <groupId>com.kumuluz.ee</groupId>
-            <artifactId>kumuluzee-microProfile-2.2</artifactId>
-            <version>3.5.0</version>
-        </dependency>
-
-
-
+        <!-- START - Arquillian requirements -->
         <dependency>
             <groupId>com.kumuluz.ee.testing</groupId>
             <artifactId>kumuluzee-arquillian-container</artifactId>
@@ -179,60 +189,15 @@
         <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>
             <artifactId>arquillian-junit-container</artifactId>
-            <version>1.5.0.Final</version>
+            <version>${arquillian.version}</version>
             <scope>test</scope>
         </dependency>
+        <!-- END - Arquillian requirements -->
 
-        <!-- required java dependencies -->
-        <!-- todo : version numbers -->
-        <!--<dependency>-->
-            <!--<groupId>javax.annotation</groupId>-->
-            <!--<artifactId>javax.annotation-api</artifactId>-->
-            <!--<version>1.3.2</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>javax.validation</groupId>-->
-            <!--<artifactId>validation-api</artifactId>-->
-            <!--<version>2.0.1.Final</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>javax.ws.rs</groupId>-->
-            <!--<artifactId>javax.ws.rs-api</artifactId>-->
-            <!--<version>2.1.1</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>javax.interceptor</groupId>-->
-            <!--<artifactId>javax.interceptor-api</artifactId>-->
-            <!--<version>3.1</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>javax.inject</groupId>-->
-            <!--<artifactId>javax.inject</artifactId>-->
-            <!--<version>1</version>-->
-        <!--</dependency>-->
-        <!-- below includes javax.el:javax.el-api -->
-        <!--<dependency>-->
-            <!--<groupId>org.glassfish</groupId>-->
-            <!--<artifactId>javax.el</artifactId>-->
-            <!--<version>3.0.0</version>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-            <!--<groupId>com.fasterxml.jackson.core</groupId>-->
-            <!--<artifactId>jackson-databind</artifactId>-->
-            <!--<version>${version.jackson}</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.apache.commons</groupId>-->
-            <!--<artifactId>commons-lang3</artifactId>-->
-            <!--<version>${version.commons-lang3}</version>-->
-        <!--</dependency>-->
-
-        <!-- todo -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.9</version>
+            <version>${version.commons-lang3}</version>
         </dependency>
 
         <!-- JUnit 4 : required because arquillian.junit is not compatible with JUnit5 -->
@@ -276,58 +241,21 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- START - required RestAssured dependencies -->
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
             <version>${rest-assured.version}</version>
             <scope>test</scope>
         </dependency>
+        <!-- END - required RestAssured dependencies -->
+        <!-- START - required AssertJ dependencies -->
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.13.2</version>
+            <version>${assertj.version}</version>
             <scope>test</scope>
         </dependency>
-
-
-        <!-- START - required RestEasy dependencies -->
-        <!--<dependency>-->
-            <!--<groupId>org.jboss.weld.servlet</groupId>-->
-            <!--<artifactId>weld-servlet</artifactId>-->
-            <!--<version>${version.weld-servlet}</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-            <!--<groupId>org.jboss.resteasy</groupId>-->
-            <!--<artifactId>resteasy-undertow</artifactId>-->
-            <!--<version>${version.resteasy}</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.jboss.resteasy</groupId>-->
-            <!--<artifactId>resteasy-client</artifactId>-->
-            <!--<version>${version.resteasy}</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.jboss.resteasy</groupId>-->
-            <!--<artifactId>resteasy-jackson2-provider</artifactId>-->
-            <!--<version>${version.resteasy}</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.jboss.resteasy</groupId>-->
-            <!--<artifactId>resteasy-validator-provider</artifactId>-->
-            <!--<version>${version.resteasy}</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.jboss.resteasy</groupId>-->
-            <!--<artifactId>resteasy-cdi</artifactId>-->
-            <!--<version>${version.resteasy}</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-        <!-- END - required RestEasy dependencies -->
+        <!-- END - required AssertJ dependencies -->
     </dependencies>
 </project>

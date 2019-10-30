@@ -18,11 +18,6 @@ import java.util.zip.GZIPOutputStream;
  *
  * This response interceptor is bounded with @CompressData. It does imply that client calling the resources that
  * are also bounded with @CompressData need to implement a ReaderInterceptor that unzips the body first!
- *
- * Note : BUG - the GZIPOutputStream needs to be closed. The problem is that the RestEasy JaxRS implementation classes, in
- * this case probably the ResteasyJackson2Provider, do NOT close this stream, so not all tokens are written to it and that
- * results in a "java.io.EOFException: Unexpected end of ZLIB input stream" exception being thrown. To prevent this we
- * altered this interceptor so it closes the stream itself explicitly.
  */
 @Provider
 @CompressData

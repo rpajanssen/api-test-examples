@@ -11,7 +11,14 @@
 
             <property name="includeRequiredLibraries">fromPom</property>
             <!--<property name="includeRequiredLibraries">MicroProfile-1.0</property>-->
+            <!--<property name="includeRequiredLibraries">MicroProfile-2.2</property>-->
 
+            <!--
+                Note: in-comment the line below if you want to use the debugger from your IDE.
+                To debug: run "mvn clean integration-test", wait till the build stops and announces it is listening to port
+                8787, start your debug session from your IDE... and the the mvn build will continue automatically
+                running your tests.
+            -->
             <!--<property name="javaArguments">-Xmx512m -XX:MaxPermSize=128m -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=y</property>-->
         </configuration>
     </container>

@@ -26,13 +26,12 @@ import javax.inject.Inject;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
-;
-
 /**
- * Arquillian test of the Kumuluzee application.
+ * Arquillian test of the KumuluzEE application.
  *
- * We can't inject components like the logger or dao in this test class since they exist in a different JVM! So we
- * had to extend the REST API exposing the logger so we could verify the CDI method interceptor actually worked.
+ * We can't inject components like the logger or dao in this test class for verifications since they exist in a
+ * different JVM! So we had to extend the REST API exposing the logger so we could verify the CDI method interceptor
+ * actually worked.
  */
 @RunWith(Arquillian.class)
 public class DefaultPersonResourceIT {
@@ -72,7 +71,7 @@ public class DefaultPersonResourceIT {
     @InSequence(2)
     public void shouldReturnAllPersons() {
         SafeList<Person> persons = given().when().get(BASE_API + "/all")
-                .then().statusCode(200).extract().as(new TypeRef<SafeList<Person>>() { });
+                .then().statusCode(200).extract().as(new TypeRef<>() { });
 
         assertThat(persons.getItems()).isNotNull();
         assertThat(persons.getItems().toArray())
@@ -84,7 +83,7 @@ public class DefaultPersonResourceIT {
                 );
 
         SafeList<String> logEntries = given().when().get(BASE_API_LOG)
-                .then().statusCode(200).extract().as(new TypeRef<SafeList<String>>() { });
+                .then().statusCode(200).extract().as(new TypeRef<>() { });
         assertThat(logEntries.getItems().size()).isEqualTo(2);
     }
 
@@ -98,7 +97,7 @@ public class DefaultPersonResourceIT {
         assertThat(person).isEqualTo(new Person(1001L, "Katy", "Perry"));
 
         SafeList<String> logEntries = given().when().get(BASE_API_LOG)
-                .then().statusCode(200).extract().as(new TypeRef<SafeList<String>>() { });
+                .then().statusCode(200).extract().as(new TypeRef<>() { });
         assertThat(logEntries.getItems().size()).isEqualTo(2);
     }
 
@@ -110,7 +109,7 @@ public class DefaultPersonResourceIT {
                 .then().assertThat().statusCode(200);
 
         SafeList<String> logEntries = given().when().get(BASE_API_LOG)
-                .then().statusCode(200).extract().as(new TypeRef<SafeList<String>>() { });
+                .then().statusCode(200).extract().as(new TypeRef<>() { });
         assertThat(logEntries.getItems().size()).isEqualTo(2);
     }
 
@@ -129,7 +128,7 @@ public class DefaultPersonResourceIT {
 
         // in case of an exception the second trace-point int the Tracer is never reached
         SafeList<String> logEntries = given().when().get(BASE_API_LOG)
-                .then().statusCode(200).extract().as(new TypeRef<SafeList<String>>() { });
+                .then().statusCode(200).extract().as(new TypeRef<>() { });
         assertThat(logEntries.getItems().size()).isEqualTo(1);
     }
 
@@ -148,7 +147,7 @@ public class DefaultPersonResourceIT {
 
         // we don't even enter the method so tracer will record nothing
         SafeList<String> logEntries = given().when().get(BASE_API_LOG)
-                .then().statusCode(200).extract().as(new TypeRef<SafeList<String>>() { });
+                .then().statusCode(200).extract().as(new TypeRef<>() { });
         assertThat(logEntries.getItems().size()).isEqualTo(0);
     }
 
@@ -159,7 +158,7 @@ public class DefaultPersonResourceIT {
         given().when().delete(BASE_API + "/2").then().assertThat().statusCode(204);
 
         SafeList<String> logEntries = given().when().get(BASE_API_LOG)
-                .then().statusCode(200).extract().as(new TypeRef<SafeList<String>>() { });
+                .then().statusCode(200).extract().as(new TypeRef<>() { });
         assertThat(logEntries.getItems().size()).isEqualTo(2);
     }
 
@@ -175,7 +174,7 @@ public class DefaultPersonResourceIT {
 
         // we don't even enter the method so tracer will record nothing
         SafeList<String> logEntries = given().when().get(BASE_API_LOG)
-                .then().statusCode(200).extract().as(new TypeRef<SafeList<String>>() { });
+                .then().statusCode(200).extract().as(new TypeRef<>() { });
         assertThat(logEntries.getItems().size()).isEqualTo(0);
     }
 

@@ -13,9 +13,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
- * Testing with Arquillian the application with this resource runs in a different JVM the test! So in order to verify if
- * the logger was called, we can't inject it in the test, we need to expose the logger through an additional API that
- * we can use for assertions in our integration tests.
+ * Testing with Arquillian the application runs in a different JVM then the test! So in order to verify if
+ * the logger was called, we can't inject the logger in the test, we need to expose the logger through an additional API
+ * that we can use for assertions in our integration tests.
+ *
+ * This resource serves that purpose. It is only available while running the integration tests.
  */
 @Path("/log")
 public class LoggingResource {
