@@ -1,4 +1,12 @@
-DevCon
+DevCon Talk Outline
+
+- intro
+- goal + run integration tests anywhere, whenever you want, independent of environment
+- story finished, no/mocked unit test, no automated integration test, first test a couple of sprints later in test env
+
+- show of hands: jax-rs, spring boot, micro profile (kumuluzee, quarkus...)
+  -> demo one jax-rs, 2x spring boot, test generation last so you don't all run out after the first demo
+
 
 JAXRS REST-EASY
 
@@ -90,3 +98,9 @@ SPRING-BOOT CLOUD CONTRACT
   - Configure how the generated classes will be bound to a base test class!
 - Add a base test class (or more when required).
 - Add the contracts.
+  - yaml / groovy
+  - call java code
+  - matchers
+
+- generated tests
+- generated stubs
