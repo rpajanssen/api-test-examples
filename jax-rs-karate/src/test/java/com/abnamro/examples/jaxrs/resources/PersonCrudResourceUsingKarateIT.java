@@ -1,12 +1,13 @@
-package com.example.examples.rest.resources;
+package com.abnamro.examples.jaxrs.resources;
 
-import com.example.examples.util.ApplicationStarter;
+import com.abnamro.utils.ApplicationStarter;
 import com.intuit.karate.junit5.Karate;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 
 import java.io.File;
+import java.io.IOException;
 
 
 /**
@@ -20,15 +21,10 @@ import java.io.File;
  * and nothing more. You then need the application to run - somewhere - and then you run the features against that
  * instance of your application.
  *
- * But... we have a Spring Boot application and want to start it automatically before the tests are run against it.
- * Luckily the @BeforeClass and @AfterClass annotations are still available to us (the @Before/@After will not be
- * triggered by the Karate runner!). So in the @BeforeClass annotated class we will start our Spring Boot application
- * and in the @AfterClass we will shut it down.
+ * We implemented an ApplicationStarter that uses RestEasy to deploy/wire an embedded application.
  *
- * We implemented a static utility class to implement the start/stop logic. We also need the spring application-
- * context because we want access to the application environment. As example it has the server-port number and
- * we need to pass that to Karate so it know on which port the application runs. We do this by setting a system
- * property. The karate-config.js configuration file we use this system property to initialize the feature
+ * We need to pass the server port to Karate so it know on which port the application runs. We do this by setting a
+ * system property. The karate-config.js configuration file we use this system property to initialize the feature
  * environment.
  *
  * In the feature files we will show you the Karate-way of implementing a before/after action.
@@ -45,16 +41,18 @@ class PersonCrudResourceUsingKarateIT {
     private static final String supportFolderPath = ".." + File.separator + "support" + File.separator;
     private static final String featureFolderPath = "classpath:karate" + File.separator + "person" + File.separator + "features";
 
+    private static ApplicationStarter applicationStarter = new ApplicationStarter();
+
     @BeforeAll
-    static void startup() {
+    static void startup() throws IOException {
         if(isIgnored()) {
             return;
         }
 
-        ApplicationStarter.start("karate");
+        applicationStarter.start();
 
         // fetch the application port and set a system property we can use in the karate-config.js
-        String baseUrl = "http://localhost:" + ApplicationStarter.getPort();
+        String baseUrl = "http://localhost:" + applicationStarter.getPort();
         System.setProperty("baseUrl", baseUrl);
 
         System.setProperty("supportFolderPath", supportFolderPath);
@@ -66,7 +64,7 @@ class PersonCrudResourceUsingKarateIT {
             return;
         }
 
-        ApplicationStarter.stop();
+        applicationStarter.stop();
     }
 
     /**

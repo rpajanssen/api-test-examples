@@ -1,6 +1,6 @@
-package com.example.examples.rest.resources;
+package com.abnamro.examples.jaxrs.resources;
 
-import com.example.examples.util.ApplicationStarter;
+import com.abnamro.utils.ApplicationStarter;
 import com.intuit.karate.KarateOptions;
 import com.intuit.karate.Results;
 import com.intuit.karate.Runner;
@@ -13,13 +13,14 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.springframework.test.util.AssertionErrors.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 /**
@@ -68,16 +69,18 @@ class PersonCrudResourceUsingKarateRunningTestInParallelIT {
     private static final String featureFolderPath = "classpath:karate" + File.separator + "person" + File.separator + "features";
     private static final String reportFolderPath = "target" + File.separator + "surefire-reports";
 
+    private static ApplicationStarter applicationStarter = new ApplicationStarter();
+
     @BeforeAll
-    static void startup() {
+    static void startup() throws IOException {
         if(isIgnored()) {
             return;
         }
 
-        ApplicationStarter.start("karate");
+        applicationStarter.start();
 
         // fetch the application port and set a system property we can use in the karate-config.js
-        String baseUrl = "http://localhost:" + ApplicationStarter.getPort();
+        String baseUrl = "http://localhost:" + applicationStarter.getPort();
         System.setProperty("baseUrl", baseUrl);
 
         System.setProperty("supportFolderPath", supportFolderPath);
@@ -89,7 +92,7 @@ class PersonCrudResourceUsingKarateRunningTestInParallelIT {
             return;
         }
 
-        ApplicationStarter.stop();
+        applicationStarter.stop();
     }
 
     /**
@@ -109,7 +112,7 @@ class PersonCrudResourceUsingKarateRunningTestInParallelIT {
         );
 
         generateReport(results.getReportDir());
-        assertTrue(results.getErrorMessages(), results.getFailCount() == 0);
+        assertTrue(results.getFailCount() == 0);
     }
 
     private static void generateReport(String reportDir) {

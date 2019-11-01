@@ -5,6 +5,7 @@ This example project will help you write (or generate) integration tests for you
 The sub projects demonstrate REST API testing:
 * a JAX-RS application with JerseyTest
 * a JAX-RS application with RestEasy
+* a JAX-RS application with Karate
 * a JAX-RS application with SpringCloudContract
 * a MicroProfile JAX-RS application with KumuluzEE and RestAssured
 * SpringBoot with RestAssured

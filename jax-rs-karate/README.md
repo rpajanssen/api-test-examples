@@ -1,6 +1,6 @@
 # What?
 
-This example project will help you write integration tests for SpringBoot REST resources using Karate.
+This example project will help you write integration tests for JAX-RS REST resources using Karate and RestEasy.
 
 Karate used to be build on top of Cucumber but they broke free from Cucumber. The latest version is no
 longer build on top / dependent on Cucumber.
@@ -23,8 +23,22 @@ Of course the traditional surefire reports will also be generated.
 
 # Tl;DR
 
-I just wanna run it: `mvn clean integration-test`
+I just wanna run it: `mvn clean test`
 
+# How to add RestEasy to your JAX-RS application?
+
+Assuming you have all dependencies for your JAX-RS application in place and of course you have
+your Junit5 dependencies for your unit tests in your pom.xml.
+
+* Add the required RestEasy dependencies to your pom.xml:
+  * servlet implementation
+  * http server
+  * dependency injection engine
+  * (de)serialization
+  * bean validation 
+
+We only use RestEasy to wire up the application, not to actually test it. For more info on RestEasy
+checkout the __jax-rs-resteasy__ module!
 
 # How to add Karate to your Spring Boot project?
 
@@ -61,6 +75,7 @@ I just wanna run it: `mvn clean integration-test`
 * managing the required state for your test to start may get complicated
 * cucumber reports require json test output, json test output only generated when running the tests in parallel
 * it does not always work as expected (as example: tags, ignoring features, ...) 
+* issues in combining the Karate runner with RestEasy (see issues below).
 
 ## Bugs
 
@@ -76,6 +91,11 @@ scenarios in parallel. Is has an argument (a value) that is true or false like: 
 You are supposed to be able to use the tags to include/exclude features from running. But... if I
 annotated a feature with @parallel=false and run the suite with '~@parallel' then this won't work!
 For our purposes we had to define two tags ourselves
+
+The combination of Karate and RestEasy in the integration tests results in a re-instantiation of the 
+application and beans for each rest call!!!! So multiple instances of our beans will be created and 
+used during setup/test/teardown... so we need to implement a hack in the DAO to make the state 
+last a bit longer :(
         
 # Useful links        
         
@@ -83,5 +103,3 @@ For our purposes we had to define two tags ourselves
 * https://apiumhub.com/tech-blog-barcelona/karate-framework-api-tests/
 * https://automationpanda.com/2018/12/10/testing-web-services-with-karate/
 * https://www.testingexcellence.com/karate-api-testing-tool-cheat-sheet/
-
-
