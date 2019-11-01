@@ -11,6 +11,7 @@ import com.abnamro.examples.jaxrs.filters.StatusFilter;
 import com.abnamro.examples.jaxrs.interceptors.GZIPWriterInterceptor;
 import com.abnamro.examples.jaxrs.interceptors.RemoveBlacklistedLastNameRequestInterceptor;
 import com.abnamro.examples.jaxrs.resources.DefaultPersonResource;
+import com.abnamro.examples.jaxrs.resources.HelloDevConResource;
 import com.abnamro.examples.utils.InMemoryLogger;
 
 import javax.ws.rs.ApplicationPath;
@@ -32,6 +33,7 @@ public class MyApplication extends Application {
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<>();
         classes.add(DefaultPersonResource.class);
+        classes.add(HelloDevConResource.class);
 
         classes.add(PersonAlreadyExistsExceptionHandler.class);
         classes.add(PersonDoesNotExistExceptionHandler.class);
