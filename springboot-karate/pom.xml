@@ -126,21 +126,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!--dependency>
-            <groupId>com.intuit.karate</groupId>
-            <artifactId>karate-ui</artifactId>
-            <version>${karate.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-classic</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-core</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency-->
         <!-- END - karate requirements -->
 
         <!-- START - Integration of Karate with Cucumber reports -->

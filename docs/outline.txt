@@ -1,46 +1,18 @@
 DevCon Talk Outline
 
+- main slide
+  explain code examples
+  links to bitbucket at the end
 - intro
-- goal + run integration tests anywhere, whenever you want, independent of environment
-- story finished, no/mocked unit test, no automated integration test, first test a couple of sprints later in test env
+- message + goal (run integration tests anywhere, whenever you want, independent of environment)
+- why : story finished, no/mocked unit test, no automated integration test, first test a couple of sprints later in test env
+  punchline: please write automated integration tests or you will never lift off!
+
+
 
 - show of hands: jax-rs, spring boot, micro profile (kumuluzee, quarkus...)
-  -> demo one jax-rs, 2x spring boot, test generation last so you don't all run out after the first demo
+  ->  will demo two testing tools that are framework agnostic
 
-
-JAXRS REST-EASY
-
-controller
-- JAXRS annotations on a generified interface
- - custom interceptors (body): compress-data, black-lis-last-names
- - custom filters (headers): http-status
- - bean validation : @Valid)
-
-- cdi interceptors for logging : @EnableTracing
-- global exception handling (exception mappers)
-
-- one dependency on a DAO
-
-pom
-- java 11 -> explicitly import the specs/modules you will use instead of the all-inlcuding javaee dependency
-- required rest-easy dependencies
-  - undertow (others are possible)
-  - client
-  - (de)serialization, validator, cdi
-
-
-Implement your test class:
-- before each
-  -> setup a rest server (configure the resources and dependencies under test)
-  -> setup a rest client
-
-- after each : cleanup
-
-- implement your tests using using the rest client
-  -> client
-  -> simply use junit-jupiter assertions
-  -> gzipreader
-  -> validation / error handling
 
 
 SPRING-BOOT KARATE
@@ -83,7 +55,9 @@ implement karate config file
     - cleanup afterwards
   - scenarios
 
-- show a cucumber report
+- run and show report
+
+- show a cucumber report (run parallel tests)
   - requirement : run tests in parallel (why o why)
     -> might not be that easy
 
@@ -104,3 +78,45 @@ SPRING-BOOT CLOUD CONTRACT
 
 - generated tests
 - generated stubs
+
+
+
+
+
+
+
+
+
+OPTIONAL: JAXRS REST-EASY
+
+controller
+- JAXRS annotations on a generified interface
+ - custom interceptors (body): compress-data, black-lis-last-names
+ - custom filters (headers): http-status
+ - bean validation : @Valid)
+
+- cdi interceptors for logging : @EnableTracing
+- global exception handling (exception mappers)
+
+- one dependency on a DAO
+
+pom
+- java 11 -> explicitly import the specs/modules you will use instead of the all-inlcuding javaee dependency
+- required rest-easy dependencies
+  - undertow (others are possible)
+  - client
+  - (de)serialization, validator, cdi
+
+
+Implement your test class:
+- before each
+  -> setup a rest server (configure the resources and dependencies under test)
+  -> setup a rest client
+
+- after each : cleanup
+
+- implement your tests using using the rest client
+  -> client
+  -> simply use junit-jupiter assertions
+  -> gzipreader
+  -> validation / error handling

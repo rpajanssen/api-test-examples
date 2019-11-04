@@ -85,6 +85,5 @@ class PersonCrudResourceUsingKarateIT {
                 .feature(featureFolderPath)
                 .tags("@sequential", "~@ignore")
                 ;
-
     }
 }
