@@ -41,7 +41,9 @@ public class DBPersonDAO implements PersonDAO<Person>{
 
     @Override
     public List<Person> findWithLastName(String lastName) {
-        return null;
+        return Optional.ofNullable(personRepository.findByLastName(lastName)).orElse(new ArrayList<>()).stream()
+                .map(Person::new)
+                .collect(Collectors.toList());
     }
 
     @Override
