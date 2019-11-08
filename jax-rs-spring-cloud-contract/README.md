@@ -34,7 +34,7 @@ I just wanna run it: `mvn clean integration-test`
 Generated tests will be in the target folder and will be automatically run with the traditional
 surefire reports as output.
 
-# How to add Spring Cloud Contract to your Spring Boot project?
+# How to add Spring Cloud Contract to your JAX-RS project?
 
 Assume you already added the required Spring Boot dependencies and the JUnit5 dependencies to your pom.
 
