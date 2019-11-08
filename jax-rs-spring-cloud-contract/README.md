@@ -36,7 +36,7 @@ surefire reports as output.
 
 # How to add Spring Cloud Contract to your JAX-RS project?
 
-Assume you already added the required Spring Boot dependencies and the JUnit5 dependencies to your pom.
+Assume you already added the required JAX-RS dependencies and the JUnit5 dependencies to your pom.
 
 * Add spring cloud contract and rest-easy (the JAX-RS implementation we will use) dependencies in pom.xml.
 * Configure appropriate springboot dependency management (__BE AWARE!__ The order of the dependencies is important!).
