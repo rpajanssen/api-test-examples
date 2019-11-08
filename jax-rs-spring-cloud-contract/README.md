@@ -40,8 +40,6 @@ Assume you already added the required JAX-RS dependencies and the JUnit5 depende
 
 * Add spring cloud contract and rest-easy (the JAX-RS implementation we will use) dependencies in pom.xml.
 * Configure appropriate springboot dependency management (__BE AWARE!__ The order of the dependencies is important!).
-  Since Spring Boot projects normally depend on a Spring Boot parent pom, that won't be possible if you
-  configure a different parent pom. You then have to add the Spring Boot BOM to the dependency management!
 * Add and configure spring-cloud-contract-maven-plugin configuration to the pom.xml
   * Configure the unit test framework of choice (here we use Junit5).
   * Configure the test mode. This can be tricky, see the Spring Boot equivalent example project). In this
@@ -69,7 +67,7 @@ Assume you already added the required JAX-RS dependencies and the JUnit5 depende
   selected Groovy in this example project. Check out the Spring documentation for all the options, there
   are many!
 
-You are good to go! Rune the maven integration test command and check the build directory (target) for a folder _generated-test-resources_.
+You are good to go! Run the maven integration test command and check the build directory (target) for a folder _generated-test-resources_.
 In that folder you will find the generated integration tests and in the surefire-reports folder you
 will find the test reports, they will have been run by the maven test command.
 
