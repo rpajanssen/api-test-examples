@@ -26,6 +26,7 @@
             <module>springboot-springcloudcontract</module>
 
 		    <module>microprofile-jax-rs-kumuluzee-restassured</module>
+            <module>microprofile-jax-rs-quarkus</module>
     </modules>
 
 	<properties>

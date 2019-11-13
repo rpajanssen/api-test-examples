@@ -8,9 +8,10 @@ The sub projects demonstrate REST API testing:
 * a JAX-RS application with Karate
 * a JAX-RS application with SpringCloudContract
 * a MicroProfile JAX-RS application with KumuluzEE and RestAssured
+* a MicroProfile JAX-RS application with Quarkus
 * SpringBoot with RestAssured
-  * and with SpringBoot with MockMVC 
-  * and with SpringBoot with RestAssuredMockMVC 
+  * and with MockMVC 
+  * and with RestAssuredMockMVC 
 * SpringBoot with Karate
 * SpringBoot with SpringCloudContract
 
@@ -23,6 +24,7 @@ Springs own MockMVC?
 
 * maven 3.6.1 (or higher)
 * java 11 (or higher)
+  note: the Quarkus example needs Java 8 for native builds (you need to install the GraalVM first!)
 
 # TL;DR
 
