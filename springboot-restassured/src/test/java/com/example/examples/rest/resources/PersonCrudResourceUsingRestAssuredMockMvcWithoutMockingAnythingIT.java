@@ -13,6 +13,7 @@ import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +25,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.context.WebApplicationContext;
 
+import static io.restassured.RestAssured.enableLoggingOfRequestAndResponseIfValidationFails;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -51,6 +53,11 @@ class PersonCrudResourceUsingRestAssuredMockMvcWithoutMockingAnythingIT {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
+
+    @BeforeAll
+    static void initialSetup() {
+        enableLoggingOfRequestAndResponseIfValidationFails();
+    }
 
     @BeforeEach
     void setup() {

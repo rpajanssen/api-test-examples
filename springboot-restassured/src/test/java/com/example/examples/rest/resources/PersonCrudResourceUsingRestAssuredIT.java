@@ -12,6 +12,7 @@ import com.github.database.rider.spring.api.DBRider;
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import static io.restassured.RestAssured.enableLoggingOfRequestAndResponseIfValidationFails;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -48,6 +50,11 @@ class PersonCrudResourceUsingRestAssuredIT {
 
     @LocalServerPort
     private int port;
+
+    @BeforeAll
+    static void initialSetup() {
+        enableLoggingOfRequestAndResponseIfValidationFails();
+    }
 
     @BeforeEach
     void setup() {

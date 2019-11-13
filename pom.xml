@@ -16,16 +16,16 @@
 	<packaging>pom</packaging>
 
     <modules>
-        <module>jax-rs-jersey-test</module>
-        <module>jax-rs-rest-easy</module>
-		<module>jax-rs-karate</module>
-        <module>jax-rs-spring-cloud-contract</module>
+            <module>jax-rs-jersey-test</module>
+            <module>jax-rs-rest-easy</module>
+		    <module>jax-rs-karate</module>
+            <module>jax-rs-spring-cloud-contract</module>
 
-		<module>springboot-restassured</module>
-        <module>springboot-karate</module>
-        <module>springboot-springcloudcontract</module>
+		    <module>springboot-restassured</module>
+            <module>springboot-karate</module>
+            <module>springboot-springcloudcontract</module>
 
-		<module>microprofile-jaxrs-restassured</module>
+		    <module>microprofile-jax-rs-kumuluzee-restassured</module>
     </modules>
 
 	<properties>

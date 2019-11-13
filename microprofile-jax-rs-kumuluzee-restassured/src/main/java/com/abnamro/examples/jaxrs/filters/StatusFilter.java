@@ -8,7 +8,6 @@ import javax.ws.rs.container.ContainerResponseFilter;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 
-// todo
 /**
  * This filter sets the http response status code if it detects the default 200 will be returned by checking if the API
  * method is annotated with our own implemented @Status annotation. It will then use the http status code given with

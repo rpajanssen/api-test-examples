@@ -18,11 +18,13 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 
+import static io.restassured.RestAssured.enableLoggingOfRequestAndResponseIfValidationFails;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -48,6 +50,11 @@ public class DefaultPersonResourceIT {
 
     @Inject
     private DefaultPersonResource underTest;
+
+    @BeforeClass
+    public static void initialSetup() {
+        enableLoggingOfRequestAndResponseIfValidationFails();
+    }
 
     @After
     public void cleanup() {
