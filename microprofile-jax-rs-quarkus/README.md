@@ -41,6 +41,11 @@ get-go!
            -Dpath="/hello" 
 ```
 
+# OpenAPI / Swagger
+
+Simply add the _quarkus-smallrye-openapi_ dependency and automatically _/openapi_ resource will be available.
+If you want the Swagger UI to be available as well then add `quarkus.swagger-ui.always-include=true` to the application properties,
+automatically the _/swagger-ui_ resource will become available.
 
 # Pros
 
@@ -51,6 +56,14 @@ get-go!
 # Cons
 
 * GraalVM is Java 8
+* Some quirks
+
+
+# Quirks
+
+* If a REST resource (or exception-mapper) returns a _javax.ws.rs.core.Response_ object, and the entity has been
+  set with an instance of the object to be returned, you may run into serialization issues. The behavior you might
+  observe is that the body of the response will be an empty json!
 
 
 # Useful links
