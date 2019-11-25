@@ -8,7 +8,8 @@ The sub projects demonstrate REST API testing:
 * a JAX-RS application with Karate
 * a JAX-RS application with SpringCloudContract
 * a MicroProfile JAX-RS application with KumuluzEE and RestAssured
-* a MicroProfile JAX-RS application with Quarkus
+* a MicroProfile JAX-RS application with Quarkus and QuarkusTest
+  * ... and with a native build and test (you need to install GraalVM though!!!)
 * SpringBoot with RestAssured
   * and with MockMVC 
   * and with RestAssuredMockMVC 

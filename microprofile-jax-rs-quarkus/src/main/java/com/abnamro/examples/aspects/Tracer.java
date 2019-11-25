@@ -19,7 +19,7 @@ import java.lang.reflect.Method;
  */
 @Interceptor
 @EnableTracing
-@Priority(1000) // todo : used to be Interceptor.Priority.LIBRARY_BEFORE in java8
+@Priority(10000) // todo : used to be Interceptor.Priority.LIBRARY_BEFORE in java8
 public class Tracer {
     private static final String MESSAGE_TEMPLATE = "%s %s";
 

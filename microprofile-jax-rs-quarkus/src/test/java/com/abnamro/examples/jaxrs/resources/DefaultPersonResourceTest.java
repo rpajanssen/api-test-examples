@@ -98,12 +98,12 @@ public class DefaultPersonResourceTest {
 
         assertNotNull(errorResponse);
         assertEquals("BAD_REQUEST", errorResponse.getCode());
-        assertEquals("update.person.firstName firstName is not allowed to be empty", errorResponse.getMessage().trim());
+        assertTrue(errorResponse.getMessage().trim().contains("firstName is not allowed to be empty"));
 
-        // todo : set low prio on interceptor
         // note: with quarkus the CDI method interceptor is called before the validator kicks in
-        //       using kumuluzee or resteasy the validator is triggerd before the interceptor
-        assertEquals(1, InMemoryLogger.getLogStatements().size());
+        //       using kumuluzee or resteasy the validator is triggered before the interceptor
+        //       if we use a prio of 1000 on the interceptor
+        assertEquals(0, InMemoryLogger.getLogStatements().size());
     }
 
     @Test
