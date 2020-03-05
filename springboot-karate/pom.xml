@@ -24,7 +24,7 @@
         <karate.version>0.9.5.RC3</karate.version>
         <cucumber-reporting.version>4.10.0</cucumber-reporting.version>
 
-        <junit.jupiter.version>5.5.0</junit.jupiter.version>
+        <junit.jupiter.version>5.6.0</junit.jupiter.version>
         <rider-spring.version>1.7.2</rider-spring.version>
 
         <spring.fox.version>2.9.2</spring.fox.version>
@@ -171,10 +171,31 @@
             Note: if we use Jupiter 5.5.0 with the separate dependencies the build will fail which can only be solved
             by adding a dependency on org.junit.platform:junit-platform-commons as well.
         -->
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- todo : should not be required but overall "mvn clean test" fails otherwise -->
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <version>1.6.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-commons</artifactId>
+            <version>1.6.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-engine</artifactId>
+            <version>1.6.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
