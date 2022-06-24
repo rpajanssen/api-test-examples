@@ -26,7 +26,7 @@
         <version.surefire>2.22.1</version.surefire>
         <version.failsafe>2.22.1</version.failsafe>
 
-        <version.resteasy>4.3.1.Final</version.resteasy>
+        <version.resteasy>4.6.0.Final</version.resteasy>
         <version.weld-servlet>2.4.8.Final</version.weld-servlet>
 
         <spring-cloud.version>Greenwich.RELEASE</spring-cloud.version>
