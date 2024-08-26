@@ -27,7 +27,7 @@
         <mockito.version>3.1.0</mockito.version>
         <rider-spring.version>1.7.2</rider-spring.version>
 
-        <spring.fox.version>2.9.2</spring.fox.version>
+        <spring.fox.version>2.10.0</spring.fox.version>
 
         <surefire.maven.plugin.version>2.22.2</surefire.maven.plugin.version>
 
